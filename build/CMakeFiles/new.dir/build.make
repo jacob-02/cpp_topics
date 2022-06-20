@@ -84,6 +84,10 @@ new: /opt/ros/galactic/lib/libvisualization_msgs__rosidl_typesupport_introspecti
 new: /opt/ros/galactic/lib/libvisualization_msgs__rosidl_typesupport_c.so
 new: /opt/ros/galactic/lib/libvisualization_msgs__rosidl_typesupport_introspection_cpp.so
 new: /opt/ros/galactic/lib/libvisualization_msgs__rosidl_typesupport_cpp.so
+new: /opt/ros/galactic/lib/libnav_msgs__rosidl_typesupport_introspection_c.so
+new: /opt/ros/galactic/lib/libnav_msgs__rosidl_typesupport_c.so
+new: /opt/ros/galactic/lib/libnav_msgs__rosidl_typesupport_introspection_cpp.so
+new: /opt/ros/galactic/lib/libnav_msgs__rosidl_typesupport_cpp.so
 new: /opt/ros/galactic/lib/libtf2_ros.so
 new: /opt/ros/galactic/lib/libtf2.so
 new: /opt/ros/galactic/lib/libmessage_filters.so
@@ -144,6 +148,7 @@ new: /opt/ros/galactic/lib/librcl_interfaces__rosidl_typesupport_c.so
 new: /opt/ros/galactic/lib/librcl_interfaces__rosidl_typesupport_introspection_cpp.so
 new: /opt/ros/galactic/lib/librcl_interfaces__rosidl_typesupport_cpp.so
 new: /opt/ros/galactic/lib/libvisualization_msgs__rosidl_generator_c.so
+new: /opt/ros/galactic/lib/libnav_msgs__rosidl_generator_c.so
 new: /opt/ros/galactic/lib/libgeometry_msgs__rosidl_typesupport_introspection_c.so
 new: /opt/ros/galactic/lib/libgeometry_msgs__rosidl_generator_c.so
 new: /opt/ros/galactic/lib/libgeometry_msgs__rosidl_typesupport_c.so

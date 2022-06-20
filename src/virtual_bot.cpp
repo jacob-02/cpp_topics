@@ -1,5 +1,6 @@
 #include <geometry_msgs/msg/transform_stamped.hpp>
 #include <visualization_msgs/msg/marker.hpp>
+#include <nav_msgs/msg/odometry.hpp>
 #include <geometry_msgs/msg/twist.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <tf2/LinearMath/Quaternion.h>
@@ -16,8 +17,6 @@ using namespace std::chrono_literals;
 class FramePublisher : public rclcpp::Node
 {
 public:
-    double x = 0.0, y = 0.0, fi = 0.0;
-    double periodTime = 0.1;
     FramePublisher()
         : Node("transform_publisher")
     {
@@ -37,10 +36,12 @@ public:
         baseLinkFrame = tf_prefix + "/base_link";
 
         subscription_ = this->create_subscription<geometry_msgs::msg::Twist>("/cmd_vel", 100, std::bind(&FramePublisher::cmdVelPb, this, _1));
-        publisher_ = this->create_publisher<visualization_msgs::msg::Marker>("robot", 100);
+        publisher_marker = this->create_publisher<visualization_msgs::msg::Marker>("robot", 100);
+        publisher_odom = this->create_publisher<nav_msgs::msg::Odometry>("/odometry", 100);
 
         marker_ = this->create_wall_timer(50ms, std::bind(&FramePublisher::markerCb, this));
         tf_ = this->create_wall_timer(50ms, std::bind(&FramePublisher::tfCb, this));
+        odom_ = this->create_wall_timer(50ms, std::bind(&FramePublisher::odomCb, this));
 
         baseLinkBroadcaster =
             std::make_unique<tf2_ros::TransformBroadcaster>(*this);
@@ -53,22 +54,25 @@ private:
     geometry_msgs::msg::TransformStamped baseLinkTf;
     geometry_msgs::msg::TransformStamped odomTf;
     visualization_msgs::msg::Marker robot;
-
+    nav_msgs::msg::Odometry odometry;
     tf2::Quaternion q;
+
+    double x = 0.0, y = 0.0, fi = 0.0;
+    double periodTime = 0.1;
 
     void cmdVelPb(const geometry_msgs::msg::Twist &msg)
     {
         currentTwist = msg;
+    }
 
+    void tfCb()
+    {        
         fi = fi + currentTwist.angular.z * periodTime;
 
         fi -= 2 * M_PI * floor((fi + M_PI) / (2 * M_PI));
         x += cos(fi) * currentTwist.linear.x * periodTime;
         y += sin(fi) * currentTwist.linear.x * periodTime;
-    }
 
-    void tfCb()
-    {
         rclcpp::Time now = this->get_clock()->now();
 
         baseLinkTf.header.frame_id = odomFrame;
@@ -121,13 +125,43 @@ private:
         robot.color.g = 0.0;
         robot.color.b = 0.0;
 
-        publisher_->publish(robot);
+        publisher_marker->publish(robot);
     }
-    
+
+    void odomCb()
+    {        
+        fi = fi + currentTwist.angular.z * periodTime;
+
+        fi -= 2 * M_PI * floor((fi + M_PI) / (2 * M_PI));
+        x += cos(fi) * (currentTwist.linear.x * periodTime);
+        y += sin(fi) * (currentTwist.linear.x * periodTime);
+
+        rclcpp::Time now = this->get_clock()->now();
+
+        odometry.header.stamp = now;
+        odometry.header.frame_id = odomFrame;
+        odometry.child_frame_id = baseLinkFrame;
+
+        odometry.pose.pose.position.x = x + 0.1;
+        odometry.pose.pose.position.y = y + 0.1;
+        odometry.pose.pose.position.z = 0;
+
+        tf2::Quaternion q_new;
+        q_new.setRPY(0, 0, fi + 0.1);
+        odometry.pose.pose.orientation.z = q_new.z();
+        odometry.pose.pose.orientation.w = q_new.w();
+
+        odometry.twist.twist = currentTwist;
+
+        publisher_odom->publish(odometry);
+    }
+
     rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr subscription_;
-    rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr publisher_;
+    rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr publisher_marker;
+    rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr publisher_odom;
     rclcpp::TimerBase::SharedPtr marker_;
     rclcpp::TimerBase::SharedPtr tf_;
+    rclcpp::TimerBase::SharedPtr odom_;
 
     std::string tf_prefix;
     std::string odomFrame;
