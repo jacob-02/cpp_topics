@@ -1,0 +1,6 @@
+virtual_node:
+  ros__parameters:
+    id: 1
+    init_pose_x: 5
+    init_pose_y: 3.14
+    init_pose_z: 2
