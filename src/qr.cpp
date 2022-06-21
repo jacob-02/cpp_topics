@@ -1,7 +1,6 @@
 #include <chrono>
 #include <functional>
 #include <memory>
-#include <random>
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/int16.hpp>
 
@@ -18,16 +17,17 @@ public:
       : Node("qr_publisher")
   {
     publisher_ = this->create_publisher<std_msgs::msg::Int16>("qr", 50);
-    qr_ = this->create_wall_timer(500ms, std::bind(&QRPublisher::qrCB, this));
+    qr_ = this->create_wall_timer(100ms, std::bind(&QRPublisher::qrCB, this));
   }
 
 private:
   std_msgs::msg::Int16 qr;
+  int n = 1;
   void qrCB()
   {
-    int n = rand() % 2;
     qr.data = n;
     publisher_->publish(qr);
+    n++;
   }
   rclcpp::TimerBase::SharedPtr qr_;
   rclcpp::Publisher<std_msgs::msg::Int16>::SharedPtr publisher_;
