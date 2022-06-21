@@ -38,13 +38,13 @@ public:
         odomFrame = tf_prefix + "/odom";
         baseLinkFrame = tf_prefix + "/base_link";
 
-        subscription_ = this->create_subscription<geometry_msgs::msg::Twist>(tf_prefix + "/cmd_vel", 100, std::bind(&FramePublisher::cmdVelPb, this, _1));
-        publisher_marker = this->create_publisher<visualization_msgs::msg::Marker>(tf_prefix +"/robot", 100);
+        subscription_ = this->create_subscription<geometry_msgs::msg::Twist>("/cmd_vel", 100, std::bind(&FramePublisher::cmdVelPb, this, _1));
+        publisher_marker = this->create_publisher<visualization_msgs::msg::Marker>(tf_prefix + "/robot", 100);
         publisher_odom = this->create_publisher<nav_msgs::msg::Odometry>(tf_prefix + "/odometry", 100);
-        subscription_qr = this->create_subscription<std_msgs::msg::Int16>("qr", 100, std::bind(&PoseUpdater::qrCb, this, _1));
+        subscription_qr = this->create_subscription<std_msgs::msg::Int16>("qr", 50, std::bind(&FramePublisher::qrCb, this, _1));
         publisher_pose = this->create_publisher<nav_msgs::msg::Odometry>("/pose_updated", 100);
 
-        pose_updated = this->create_wall_timer(50ms, std::bind(&PoseUpdater::poseUpdatedCb, this));
+        pose_updated = this->create_wall_timer(50ms, std::bind(&FramePublisher::poseUpdatedCb, this));
         marker_ = this->create_wall_timer(50ms, std::bind(&FramePublisher::markerCb, this));
         tf_ = this->create_wall_timer(50ms, std::bind(&FramePublisher::tfCb, this));
         odom_ = this->create_wall_timer(50ms, std::bind(&FramePublisher::odomCb, this));
@@ -63,10 +63,11 @@ private:
     nav_msgs::msg::Odometry odometry;
     tf2::Quaternion q;
     std_msgs::msg::Int16 qr;
+    nav_msgs::msg::Odometry fusedOdom;
 
     double x = 0.0, y = 0.0, fi = 0.0;
     double periodTime = 0.1;
-    double error_x = 0.0, error_y = 0.0, error_theta = 0.0, x_past, y_past;
+    double error_x = 0.0, error_y = 0.0, error_theta = 0.0;
 
     void cmdVelPb(const geometry_msgs::msg::Twist &msg)
     {
@@ -76,6 +77,31 @@ private:
     void qrCb(const std_msgs::msg::Int16 &msg)
     {
         qr = msg;
+    }
+
+    void poseUpdatedCb()
+    {
+        rclcpp::Time now = this->get_clock()->now();
+        fusedOdom.header = baseLinkTf.header;
+        fusedOdom.header.stamp = now;
+        fusedOdom.child_frame_id = baseLinkTf.child_frame_id;
+
+        fusedOdom.pose.pose = odometry.pose.pose;
+
+        if (qr.data == 1)
+        {
+            fusedOdom.pose.pose.position.x = x;
+            fusedOdom.pose.pose.position.y = y;
+            fusedOdom.pose.pose.position.z = 0;
+
+            fusedOdom.pose.pose.orientation.x = q.x();
+            fusedOdom.pose.pose.orientation.y = q.y();
+            fusedOdom.pose.pose.orientation.z = q.z();
+            fusedOdom.pose.pose.orientation.w = q.w();
+        }
+
+        fusedOdom.twist.twist = currentTwist;
+        publisher_pose->publish(fusedOdom);
     }
 
     void tfCb()
@@ -130,9 +156,9 @@ private:
         robot.id = 0;
         robot.type = visualization_msgs::msg::Marker::ARROW;
         robot.action = visualization_msgs::msg::Marker::ADD;
-        robot.scale.x = 1;
-        robot.scale.y = 0.1;
-        robot.scale.z = 0.1;
+        robot.scale.x = 0.05;
+        robot.scale.y = 0.05;
+        robot.scale.z = 0.05;
         robot.color.a = 1.0;
         robot.color.r = 1.0;
         robot.color.g = 0.0;
@@ -151,9 +177,9 @@ private:
 
         if (currentTwist.linear.x != 0.0)
         {
-            error_x += ((double(rand())/RAND_MAX)-0.5) / 10;
-            error_y += ((double(rand())/RAND_MAX)-0.5) / 10;
-            error_theta += ((double(rand())/RAND_MAX)-0.5) / 10;
+            error_x += ((double(rand()) / RAND_MAX) - 0.5) / 10;
+            error_y += ((double(rand()) / RAND_MAX) - 0.5) / 10;
+            error_theta += ((double(rand()) / RAND_MAX) - 0.5) / 10;
         }
 
         rclcpp::Time now = this->get_clock()->now();
@@ -174,9 +200,6 @@ private:
         odometry.pose.pose.orientation.w = q_new.w();
 
         odometry.twist.twist = currentTwist;
-
-        x_past = x;
-        y_past = y;
 
         publisher_odom->publish(odometry);
     }

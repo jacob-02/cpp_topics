@@ -17,8 +17,8 @@ public:
   QRPublisher()
       : Node("qr_publisher")
   {
-    publisher_ = this->create_publisher<std_msgs::msg::Int16>("qr", 100);
-    qr_ = this->create_wall_timer(50ms, std::bind(&QRPublisher::qrCB, this));
+    publisher_ = this->create_publisher<std_msgs::msg::Int16>("qr", 50);
+    qr_ = this->create_wall_timer(500ms, std::bind(&QRPublisher::qrCB, this));
   }
 
 private:

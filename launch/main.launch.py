@@ -21,13 +21,7 @@ def generate_launch_description():
         executable="qr_code"
     )
 
-    pose_node = Node(
-        package="cpp_topics",
-        executable="pose"
-    )
-
     ld.add_action(virtual_bot_node)
     ld.add_action(qr_node)
-    ld.add_action(pose_node)
 
     return ld
