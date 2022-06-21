@@ -11,9 +11,9 @@ def generate_launch_description():
         package="cpp_topics",
         executable="new",
         parameters=[
-            {"tf_prefix": "r1"},
+            {"tf_prefix": "r2"},
             {"x_pos":1.8},
-            {"y_pos":-0.7},
+            {"y_pos":0.7},
             {"a_pos":1.56}
         ]
     )

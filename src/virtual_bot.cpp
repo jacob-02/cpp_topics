@@ -10,6 +10,8 @@
 #include <functional>
 #include <memory>
 #include <string>
+#include <math.h>
+#include <random>
 
 using std::placeholders::_1;
 using namespace std::chrono_literals;
@@ -59,6 +61,7 @@ private:
 
     double x = 0.0, y = 0.0, fi = 0.0;
     double periodTime = 0.1;
+    double error_x = 0.0, error_y = 0.0, error_theta = 0.0, x_past, y_past;
 
     void cmdVelPb(const geometry_msgs::msg::Twist &msg)
     {
@@ -66,12 +69,12 @@ private:
     }
 
     void tfCb()
-    {        
+    {
         fi = fi + currentTwist.angular.z * periodTime;
 
         fi -= 2 * M_PI * floor((fi + M_PI) / (2 * M_PI));
-        x += cos(fi) * currentTwist.linear.x * periodTime;
-        y += sin(fi) * currentTwist.linear.x * periodTime;
+        x += cos(fi) * (currentTwist.linear.x * periodTime);
+        y += sin(fi) * (currentTwist.linear.x * periodTime);
 
         rclcpp::Time now = this->get_clock()->now();
 
@@ -129,12 +132,19 @@ private:
     }
 
     void odomCb()
-    {        
+    {
         fi = fi + currentTwist.angular.z * periodTime;
 
         fi -= 2 * M_PI * floor((fi + M_PI) / (2 * M_PI));
         x += cos(fi) * (currentTwist.linear.x * periodTime);
         y += sin(fi) * (currentTwist.linear.x * periodTime);
+
+        if (currentTwist.linear.x != 0.0)
+        {
+            error_x += ((double(rand())/RAND_MAX)-0.5) / 10;
+            error_y += ((double(rand())/RAND_MAX)-0.5) / 10;
+            error_theta += ((double(rand())/RAND_MAX)-0.5) / 10;
+        }
 
         rclcpp::Time now = this->get_clock()->now();
 
@@ -142,16 +152,21 @@ private:
         odometry.header.frame_id = odomFrame;
         odometry.child_frame_id = baseLinkFrame;
 
-        odometry.pose.pose.position.x = x + 0.1;
-        odometry.pose.pose.position.y = y + 0.1;
+        odometry.pose.pose.position.x = x + error_x;
+        odometry.pose.pose.position.y = y + error_y;
         odometry.pose.pose.position.z = 0;
 
         tf2::Quaternion q_new;
-        q_new.setRPY(0, 0, fi + 0.1);
+        q_new.setEuler(0, 0, error_theta + fi);
+        odometry.pose.pose.orientation.x = q_new.x();
+        odometry.pose.pose.orientation.y = q_new.y();
         odometry.pose.pose.orientation.z = q_new.z();
         odometry.pose.pose.orientation.w = q_new.w();
 
         odometry.twist.twist = currentTwist;
+
+        x_past = x;
+        y_past = y;
 
         publisher_odom->publish(odometry);
     }
