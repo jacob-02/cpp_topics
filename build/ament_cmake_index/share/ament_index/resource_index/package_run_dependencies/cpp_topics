@@ -1,1 +1,1 @@
-rclcpp;std_msgs;geometry_msgs;tf2;tf2_ros;visualization_msgs;new;ament_lint_auto;ament_lint_common
+rclcpp;std_msgs;geometry_msgs;tf2;tf2_ros;visualization_msgs;new;pose;qr_code;ament_lint_auto;ament_lint_common

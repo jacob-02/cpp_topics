@@ -53,6 +53,8 @@ CMAKE_BINARY_DIR = /home/jacob/accio_ws/src/cpp_topics/build
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
+all: CMakeFiles/qr_code.dir/all
+all: CMakeFiles/pose.dir/all
 all: CMakeFiles/new.dir/all
 
 .PHONY : all
@@ -63,11 +65,67 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
+clean: CMakeFiles/qr_code.dir/clean
+clean: CMakeFiles/pose.dir/clean
 clean: CMakeFiles/new.dir/clean
 clean: CMakeFiles/cpp_topics_uninstall.dir/clean
 clean: CMakeFiles/uninstall.dir/clean
 
 .PHONY : clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/qr_code.dir
+
+# All Build rule for target.
+CMakeFiles/qr_code.dir/all:
+	$(MAKE) -f CMakeFiles/qr_code.dir/build.make CMakeFiles/qr_code.dir/depend
+	$(MAKE) -f CMakeFiles/qr_code.dir/build.make CMakeFiles/qr_code.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jacob/accio_ws/src/cpp_topics/build/CMakeFiles --progress-num=5,6 "Built target qr_code"
+.PHONY : CMakeFiles/qr_code.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/qr_code.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jacob/accio_ws/src/cpp_topics/build/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/qr_code.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jacob/accio_ws/src/cpp_topics/build/CMakeFiles 0
+.PHONY : CMakeFiles/qr_code.dir/rule
+
+# Convenience name for target.
+qr_code: CMakeFiles/qr_code.dir/rule
+
+.PHONY : qr_code
+
+# clean rule for target.
+CMakeFiles/qr_code.dir/clean:
+	$(MAKE) -f CMakeFiles/qr_code.dir/build.make CMakeFiles/qr_code.dir/clean
+.PHONY : CMakeFiles/qr_code.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/pose.dir
+
+# All Build rule for target.
+CMakeFiles/pose.dir/all:
+	$(MAKE) -f CMakeFiles/pose.dir/build.make CMakeFiles/pose.dir/depend
+	$(MAKE) -f CMakeFiles/pose.dir/build.make CMakeFiles/pose.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jacob/accio_ws/src/cpp_topics/build/CMakeFiles --progress-num=3,4 "Built target pose"
+.PHONY : CMakeFiles/pose.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/pose.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jacob/accio_ws/src/cpp_topics/build/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/pose.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jacob/accio_ws/src/cpp_topics/build/CMakeFiles 0
+.PHONY : CMakeFiles/pose.dir/rule
+
+# Convenience name for target.
+pose: CMakeFiles/pose.dir/rule
+
+.PHONY : pose
+
+# clean rule for target.
+CMakeFiles/pose.dir/clean:
+	$(MAKE) -f CMakeFiles/pose.dir/build.make CMakeFiles/pose.dir/clean
+.PHONY : CMakeFiles/pose.dir/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/new.dir

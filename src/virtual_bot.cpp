@@ -6,6 +6,7 @@
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2_ros/transform_broadcaster.h>
 #include <tf2_ros/static_transform_broadcaster.h>
+#include <std_msgs/msg/int16.hpp>
 #include <chrono>
 #include <functional>
 #include <memory>
@@ -37,10 +38,13 @@ public:
         odomFrame = tf_prefix + "/odom";
         baseLinkFrame = tf_prefix + "/base_link";
 
-        subscription_ = this->create_subscription<geometry_msgs::msg::Twist>("/cmd_vel", 100, std::bind(&FramePublisher::cmdVelPb, this, _1));
-        publisher_marker = this->create_publisher<visualization_msgs::msg::Marker>("robot", 100);
-        publisher_odom = this->create_publisher<nav_msgs::msg::Odometry>("/odometry", 100);
+        subscription_ = this->create_subscription<geometry_msgs::msg::Twist>(tf_prefix + "/cmd_vel", 100, std::bind(&FramePublisher::cmdVelPb, this, _1));
+        publisher_marker = this->create_publisher<visualization_msgs::msg::Marker>(tf_prefix +"/robot", 100);
+        publisher_odom = this->create_publisher<nav_msgs::msg::Odometry>(tf_prefix + "/odometry", 100);
+        subscription_qr = this->create_subscription<std_msgs::msg::Int16>("qr", 100, std::bind(&PoseUpdater::qrCb, this, _1));
+        publisher_pose = this->create_publisher<nav_msgs::msg::Odometry>("/pose_updated", 100);
 
+        pose_updated = this->create_wall_timer(50ms, std::bind(&PoseUpdater::poseUpdatedCb, this));
         marker_ = this->create_wall_timer(50ms, std::bind(&FramePublisher::markerCb, this));
         tf_ = this->create_wall_timer(50ms, std::bind(&FramePublisher::tfCb, this));
         odom_ = this->create_wall_timer(50ms, std::bind(&FramePublisher::odomCb, this));
@@ -58,6 +62,7 @@ private:
     visualization_msgs::msg::Marker robot;
     nav_msgs::msg::Odometry odometry;
     tf2::Quaternion q;
+    std_msgs::msg::Int16 qr;
 
     double x = 0.0, y = 0.0, fi = 0.0;
     double periodTime = 0.1;
@@ -66,6 +71,11 @@ private:
     void cmdVelPb(const geometry_msgs::msg::Twist &msg)
     {
         currentTwist = msg;
+    }
+
+    void qrCb(const std_msgs::msg::Int16 &msg)
+    {
+        qr = msg;
     }
 
     void tfCb()
@@ -174,6 +184,9 @@ private:
     rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr subscription_;
     rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr publisher_marker;
     rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr publisher_odom;
+    rclcpp::Subscription<std_msgs::msg::Int16>::SharedPtr subscription_qr;
+    rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr publisher_pose;
+    rclcpp::TimerBase::SharedPtr pose_updated;
     rclcpp::TimerBase::SharedPtr marker_;
     rclcpp::TimerBase::SharedPtr tf_;
     rclcpp::TimerBase::SharedPtr odom_;

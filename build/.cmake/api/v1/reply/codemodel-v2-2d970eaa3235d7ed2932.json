@@ -17,7 +17,9 @@
 					[
 						0,
 						1,
-						2
+						2,
+						3,
+						4
 					]
 				}
 			],
@@ -34,7 +36,9 @@
 					[
 						0,
 						1,
-						2
+						2,
+						3,
+						4
 					]
 				}
 			],
@@ -50,8 +54,22 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "new::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-new-Debug-ca226f5f34a74aeb48a3.json",
+					"jsonFile" : "target-new-Debug-605e8fc16edc0040151d.json",
 					"name" : "new",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "pose::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-pose-Debug-0c91ccbbb7bb52ea4c98.json",
+					"name" : "pose",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "qr_code::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-qr_code-Debug-5d7c5e2198b0cb3673ed.json",
+					"name" : "qr_code",
 					"projectIndex" : 0
 				},
 				{

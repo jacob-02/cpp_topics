@@ -5,7 +5,7 @@ set(cpp_topics_BUILD_DEPENDS "rclcpp" "std_msgs" "geometry_msgs" "tf2" "tf2_ros"
 set(cpp_topics_BUILDTOOL_DEPENDS "ament_cmake")
 set(cpp_topics_BUILD_EXPORT_DEPENDS "rclcpp" "std_msgs" "geometry_msgs" "tf2" "tf2_ros" "visualization_msgs")
 set(cpp_topics_BUILDTOOL_EXPORT_DEPENDS )
-set(cpp_topics_EXEC_DEPENDS "new" "rclcpp" "std_msgs" "geometry_msgs" "tf2" "tf2_ros" "visualization_msgs")
+set(cpp_topics_EXEC_DEPENDS "new" "pose" "qr_code" "rclcpp" "std_msgs" "geometry_msgs" "tf2" "tf2_ros" "visualization_msgs")
 set(cpp_topics_TEST_DEPENDS "ament_lint_auto" "ament_lint_common")
 set(cpp_topics_GROUP_DEPENDS )
 set(cpp_topics_MEMBER_OF_GROUPS )

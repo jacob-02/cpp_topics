@@ -16,6 +16,7 @@ find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
+find_package(tf2_msgs REQUIRED)
 find_package(visualization_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 
@@ -29,11 +30,17 @@ install(DIRECTORY
 )
 
 add_executable(new src/virtual_bot.cpp)
+add_executable(pose src/pose_update.cpp)
+add_executable(qr_code src/qr.cpp)
 
 ament_target_dependencies(new rclcpp geometry_msgs tf2 tf2_ros std_msgs visualization_msgs nav_msgs)
+ament_target_dependencies(pose rclcpp std_msgs visualization_msgs nav_msgs tf2_msgs)
+ament_target_dependencies(qr_code rclcpp std_msgs)
 
 install(TARGETS
   new
+  pose
+  qr_code
   DESTINATION lib/${PROJECT_NAME})
 
 ament_package()

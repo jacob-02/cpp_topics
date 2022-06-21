@@ -20,6 +20,8 @@
   <test_depend>ament_lint_common</test_depend>
 
   <exec_depend>new</exec_depend>
+  <exec_depend>pose</exec_depend>
+  <exec_depend>qr_code</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

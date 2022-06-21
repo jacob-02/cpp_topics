@@ -760,6 +760,8 @@ set(CMAKE_MAKEFILE_PRODUCTS
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
+  "CMakeFiles/qr_code.dir/DependInfo.cmake"
+  "CMakeFiles/pose.dir/DependInfo.cmake"
   "CMakeFiles/new.dir/DependInfo.cmake"
   "CMakeFiles/cpp_topics_uninstall.dir/DependInfo.cmake"
   "CMakeFiles/uninstall.dir/DependInfo.cmake"

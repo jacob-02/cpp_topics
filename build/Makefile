@@ -56,18 +56,6 @@ CMAKE_BINARY_DIR = /home/jacob/accio_ws/src/cpp_topics/build
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target install/strip
-install/strip: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
-	/usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip
-
-# Special rule for the target install/strip
-install/strip/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
-	/usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip/fast
-
 # Special rule for the target install/local
 install/local: preinstall
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
@@ -135,6 +123,18 @@ test/fast: test
 
 .PHONY : test/fast
 
+# Special rule for the target install/strip
+install/strip: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
+	/usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip
+
+# Special rule for the target install/strip
+install/strip/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
+	/usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip/fast
+
 # The main all target
 all: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/jacob/accio_ws/src/cpp_topics/build/CMakeFiles /home/jacob/accio_ws/src/cpp_topics/build/CMakeFiles/progress.marks
@@ -166,6 +166,32 @@ preinstall/fast:
 depend:
 	$(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
+
+#=============================================================================
+# Target rules for targets named qr_code
+
+# Build rule for target.
+qr_code: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 qr_code
+.PHONY : qr_code
+
+# fast build rule for target.
+qr_code/fast:
+	$(MAKE) -f CMakeFiles/qr_code.dir/build.make CMakeFiles/qr_code.dir/build
+.PHONY : qr_code/fast
+
+#=============================================================================
+# Target rules for targets named pose
+
+# Build rule for target.
+pose: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 pose
+.PHONY : pose
+
+# fast build rule for target.
+pose/fast:
+	$(MAKE) -f CMakeFiles/pose.dir/build.make CMakeFiles/pose.dir/build
+.PHONY : pose/fast
 
 #=============================================================================
 # Target rules for targets named new
@@ -206,6 +232,60 @@ uninstall/fast:
 	$(MAKE) -f CMakeFiles/uninstall.dir/build.make CMakeFiles/uninstall.dir/build
 .PHONY : uninstall/fast
 
+src/pose_update.o: src/pose_update.cpp.o
+
+.PHONY : src/pose_update.o
+
+# target to build an object file
+src/pose_update.cpp.o:
+	$(MAKE) -f CMakeFiles/pose.dir/build.make CMakeFiles/pose.dir/src/pose_update.cpp.o
+.PHONY : src/pose_update.cpp.o
+
+src/pose_update.i: src/pose_update.cpp.i
+
+.PHONY : src/pose_update.i
+
+# target to preprocess a source file
+src/pose_update.cpp.i:
+	$(MAKE) -f CMakeFiles/pose.dir/build.make CMakeFiles/pose.dir/src/pose_update.cpp.i
+.PHONY : src/pose_update.cpp.i
+
+src/pose_update.s: src/pose_update.cpp.s
+
+.PHONY : src/pose_update.s
+
+# target to generate assembly for a file
+src/pose_update.cpp.s:
+	$(MAKE) -f CMakeFiles/pose.dir/build.make CMakeFiles/pose.dir/src/pose_update.cpp.s
+.PHONY : src/pose_update.cpp.s
+
+src/qr.o: src/qr.cpp.o
+
+.PHONY : src/qr.o
+
+# target to build an object file
+src/qr.cpp.o:
+	$(MAKE) -f CMakeFiles/qr_code.dir/build.make CMakeFiles/qr_code.dir/src/qr.cpp.o
+.PHONY : src/qr.cpp.o
+
+src/qr.i: src/qr.cpp.i
+
+.PHONY : src/qr.i
+
+# target to preprocess a source file
+src/qr.cpp.i:
+	$(MAKE) -f CMakeFiles/qr_code.dir/build.make CMakeFiles/qr_code.dir/src/qr.cpp.i
+.PHONY : src/qr.cpp.i
+
+src/qr.s: src/qr.cpp.s
+
+.PHONY : src/qr.s
+
+# target to generate assembly for a file
+src/qr.cpp.s:
+	$(MAKE) -f CMakeFiles/qr_code.dir/build.make CMakeFiles/qr_code.dir/src/qr.cpp.s
+.PHONY : src/qr.cpp.s
+
 src/virtual_bot.o: src/virtual_bot.cpp.o
 
 .PHONY : src/virtual_bot.o
@@ -239,16 +319,24 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... install/strip"
 	@echo "... install/local"
 	@echo "... install"
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... test"
+	@echo "... install/strip"
+	@echo "... qr_code"
+	@echo "... pose"
 	@echo "... new"
 	@echo "... cpp_topics_uninstall"
 	@echo "... uninstall"
+	@echo "... src/pose_update.o"
+	@echo "... src/pose_update.i"
+	@echo "... src/pose_update.s"
+	@echo "... src/qr.o"
+	@echo "... src/qr.i"
+	@echo "... src/qr.s"
 	@echo "... src/virtual_bot.o"
 	@echo "... src/virtual_bot.i"
 	@echo "... src/virtual_bot.s"
