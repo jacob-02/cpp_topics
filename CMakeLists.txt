@@ -30,16 +30,16 @@ install(DIRECTORY
 )
 
 add_executable(new src/virtual_bot.cpp)
-add_executable(pose src/pose_update.cpp)
+add_executable(square src/square.cpp)
 add_executable(qr_code src/qr.cpp)
 
 ament_target_dependencies(new rclcpp geometry_msgs tf2 tf2_ros std_msgs visualization_msgs nav_msgs)
-ament_target_dependencies(pose rclcpp std_msgs visualization_msgs nav_msgs tf2_msgs)
+ament_target_dependencies(square rclcpp geometry_msgs std_msgs)
 ament_target_dependencies(qr_code rclcpp std_msgs)
 
 install(TARGETS
   new
-  pose
+  square
   qr_code
   DESTINATION lib/${PROJECT_NAME})
 

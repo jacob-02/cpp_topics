@@ -6,8 +6,8 @@
 },
 {
   "directory": "/home/jacob/accio_ws/src/cpp_topics/build",
-  "command": "/usr/bin/g++  -DDEFAULT_RMW_IMPLEMENTATION=rmw_cyclonedds_cpp -DRCUTILS_ENABLE_FAULT_INJECTION -isystem /opt/ros/galactic/include  -g   -Wall -Wextra -Wpedantic -std=gnu++17 -o CMakeFiles/pose.dir/src/pose_update.cpp.o -c /home/jacob/accio_ws/src/cpp_topics/src/pose_update.cpp",
-  "file": "/home/jacob/accio_ws/src/cpp_topics/src/pose_update.cpp"
+  "command": "/usr/bin/g++  -DDEFAULT_RMW_IMPLEMENTATION=rmw_cyclonedds_cpp -DRCUTILS_ENABLE_FAULT_INJECTION -isystem /opt/ros/galactic/include  -g   -Wall -Wextra -Wpedantic -std=gnu++17 -o CMakeFiles/square.dir/src/square.cpp.o -c /home/jacob/accio_ws/src/cpp_topics/src/square.cpp",
+  "file": "/home/jacob/accio_ws/src/cpp_topics/src/square.cpp"
 },
 {
   "directory": "/home/jacob/accio_ws/src/cpp_topics/build",

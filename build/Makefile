@@ -181,17 +181,17 @@ qr_code/fast:
 .PHONY : qr_code/fast
 
 #=============================================================================
-# Target rules for targets named pose
+# Target rules for targets named square
 
 # Build rule for target.
-pose: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 pose
-.PHONY : pose
+square: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 square
+.PHONY : square
 
 # fast build rule for target.
-pose/fast:
-	$(MAKE) -f CMakeFiles/pose.dir/build.make CMakeFiles/pose.dir/build
-.PHONY : pose/fast
+square/fast:
+	$(MAKE) -f CMakeFiles/square.dir/build.make CMakeFiles/square.dir/build
+.PHONY : square/fast
 
 #=============================================================================
 # Target rules for targets named new
@@ -232,33 +232,6 @@ uninstall/fast:
 	$(MAKE) -f CMakeFiles/uninstall.dir/build.make CMakeFiles/uninstall.dir/build
 .PHONY : uninstall/fast
 
-src/pose_update.o: src/pose_update.cpp.o
-
-.PHONY : src/pose_update.o
-
-# target to build an object file
-src/pose_update.cpp.o:
-	$(MAKE) -f CMakeFiles/pose.dir/build.make CMakeFiles/pose.dir/src/pose_update.cpp.o
-.PHONY : src/pose_update.cpp.o
-
-src/pose_update.i: src/pose_update.cpp.i
-
-.PHONY : src/pose_update.i
-
-# target to preprocess a source file
-src/pose_update.cpp.i:
-	$(MAKE) -f CMakeFiles/pose.dir/build.make CMakeFiles/pose.dir/src/pose_update.cpp.i
-.PHONY : src/pose_update.cpp.i
-
-src/pose_update.s: src/pose_update.cpp.s
-
-.PHONY : src/pose_update.s
-
-# target to generate assembly for a file
-src/pose_update.cpp.s:
-	$(MAKE) -f CMakeFiles/pose.dir/build.make CMakeFiles/pose.dir/src/pose_update.cpp.s
-.PHONY : src/pose_update.cpp.s
-
 src/qr.o: src/qr.cpp.o
 
 .PHONY : src/qr.o
@@ -285,6 +258,33 @@ src/qr.s: src/qr.cpp.s
 src/qr.cpp.s:
 	$(MAKE) -f CMakeFiles/qr_code.dir/build.make CMakeFiles/qr_code.dir/src/qr.cpp.s
 .PHONY : src/qr.cpp.s
+
+src/square.o: src/square.cpp.o
+
+.PHONY : src/square.o
+
+# target to build an object file
+src/square.cpp.o:
+	$(MAKE) -f CMakeFiles/square.dir/build.make CMakeFiles/square.dir/src/square.cpp.o
+.PHONY : src/square.cpp.o
+
+src/square.i: src/square.cpp.i
+
+.PHONY : src/square.i
+
+# target to preprocess a source file
+src/square.cpp.i:
+	$(MAKE) -f CMakeFiles/square.dir/build.make CMakeFiles/square.dir/src/square.cpp.i
+.PHONY : src/square.cpp.i
+
+src/square.s: src/square.cpp.s
+
+.PHONY : src/square.s
+
+# target to generate assembly for a file
+src/square.cpp.s:
+	$(MAKE) -f CMakeFiles/square.dir/build.make CMakeFiles/square.dir/src/square.cpp.s
+.PHONY : src/square.cpp.s
 
 src/virtual_bot.o: src/virtual_bot.cpp.o
 
@@ -327,16 +327,16 @@ help:
 	@echo "... test"
 	@echo "... install/strip"
 	@echo "... qr_code"
-	@echo "... pose"
+	@echo "... square"
 	@echo "... new"
 	@echo "... cpp_topics_uninstall"
 	@echo "... uninstall"
-	@echo "... src/pose_update.o"
-	@echo "... src/pose_update.i"
-	@echo "... src/pose_update.s"
 	@echo "... src/qr.o"
 	@echo "... src/qr.i"
 	@echo "... src/qr.s"
+	@echo "... src/square.o"
+	@echo "... src/square.i"
+	@echo "... src/square.s"
 	@echo "... src/virtual_bot.o"
 	@echo "... src/virtual_bot.i"
 	@echo "... src/virtual_bot.s"
