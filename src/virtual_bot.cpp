@@ -42,7 +42,7 @@ public:
         publisher_marker = this->create_publisher<visualization_msgs::msg::Marker>(tf_prefix + "/robot", 100);
         publisher_odom = this->create_publisher<nav_msgs::msg::Odometry>(tf_prefix + "/odometry", 100);
         subscription_qr = this->create_subscription<std_msgs::msg::Int16>("qr", 50, std::bind(&FramePublisher::qrCb, this, _1));
-        publisher_pose = this->create_publisher<nav_msgs::msg::Odometry>("/pose_updated", 100);
+        publisher_pose = this->create_publisher<nav_msgs::msg::Odometry>(tf_prefix + "/pose_updated", 100);
 
         pose_updated = this->create_wall_timer(50ms, std::bind(&FramePublisher::poseUpdatedCb, this));
         marker_ = this->create_wall_timer(50ms, std::bind(&FramePublisher::markerCb, this));
@@ -156,7 +156,7 @@ private:
         robot.id = 0;
         robot.type = visualization_msgs::msg::Marker::ARROW;
         robot.action = visualization_msgs::msg::Marker::ADD;
-        robot.scale.x = 0.05;
+        robot.scale.x = 1;
         robot.scale.y = 0.05;
         robot.scale.z = 0.05;
         robot.color.a = 1.0;
