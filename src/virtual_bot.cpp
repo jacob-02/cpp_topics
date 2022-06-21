@@ -24,7 +24,7 @@ public:
     {
         // Initialize the transform broadcaster
 
-        this->declare_parameter<std::string>("tf_prefix", "r2");
+        this->declare_parameter<std::string>("tf_prefix", "r0");
         this->declare_parameter<std::double_t>("x_pos", 1.8);
         this->declare_parameter<std::double_t>("y_pos", -0.7);
         this->declare_parameter<std::double_t>("a_pos", 1.56);
