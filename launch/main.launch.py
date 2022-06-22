@@ -1,6 +1,7 @@
 from launch import LaunchDescription
 from launch_ros.actions import Node
 
+
 def generate_launch_description():
 
     ld = LaunchDescription()
@@ -10,15 +11,18 @@ def generate_launch_description():
         executable="new",
         parameters=[
             {"tf_prefix": "r1"},
-            {"x_pos":1.8},
-            {"y_pos":-0.7},
-            {"a_pos":1.56}
+            {"x_pos": 1.8},
+            {"y_pos": -0.7},
+            {"a_pos": 1.56}
         ]
     )
 
     qr_node = Node(
         package="cpp_topics",
-        executable="qr_code"
+        executable="qr_code",
+        parameters=[
+            {"tf_prefix": "r1"}
+        ]
     )
 
     square_node = Node(

@@ -16,7 +16,10 @@ public:
   QRPublisher()
       : Node("qr_publisher")
   {
-    publisher_ = this->create_publisher<std_msgs::msg::Int16>("qr", 50);
+    this->declare_parameter<std::string>("tf_prefix", "r0");
+    this->get_parameter("tf_prefix", tf_prefix);
+
+    publisher_ = this->create_publisher<std_msgs::msg::Int16>(tf_prefix + "/qr", 50);
     qr_ = this->create_wall_timer(100ms, std::bind(&QRPublisher::qrCB, this));
   }
 
@@ -31,6 +34,7 @@ private:
   }
   rclcpp::TimerBase::SharedPtr qr_;
   rclcpp::Publisher<std_msgs::msg::Int16>::SharedPtr publisher_;
+  std::string tf_prefix;
 };
 
 int main(int argc, char *argv[])

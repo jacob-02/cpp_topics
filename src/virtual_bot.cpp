@@ -38,9 +38,9 @@ public:
         baseLinkFrame = tf_prefix + "/base_link";
 
         subscription_ = this->create_subscription<geometry_msgs::msg::Twist>(tf_prefix + "/cmd_vel", 100, std::bind(&FramePublisher::cmdVelPb, this, _1));
-        publisher_marker = this->create_publisher<nav_msgs::msg::Odometry>(tf_prefix + "/robot", 100);
+        publisher_true = this->create_publisher<nav_msgs::msg::Odometry>(tf_prefix + "/robot", 100);
         publisher_odom = this->create_publisher<nav_msgs::msg::Odometry>(tf_prefix + "/odometry", 100);
-        subscription_qr = this->create_subscription<std_msgs::msg::Int16>("qr", 100, std::bind(&FramePublisher::qrCb, this, _1));
+        subscription_qr = this->create_subscription<std_msgs::msg::Int16>(tf_prefix + "/qr", 100, std::bind(&FramePublisher::qrCb, this, _1));
         publisher_pose = this->create_publisher<nav_msgs::msg::Odometry>(tf_prefix + "/pose_updated", 100);
 
         pose_updated = this->create_wall_timer(50ms, std::bind(&FramePublisher::poseUpdatedCb, this));
@@ -100,9 +100,19 @@ private:
             error_theta_new_bot += ((double(rand()) / RAND_MAX) - 0.5) / 100;
         }
 
-        rclcpp::Time now = this->get_clock()->now();
+        else
+        {
+            error_x_new = 0.0;
+            error_y_new = 0.0;
+            error_theta_new = 0.0;
+            error_x_new_bot = 0.0;
+            error_y_new_bot = 0.0;
+            error_theta_new_bot = 0.0;
+        }
 
-        fusedOdom.header.stamp = now;
+        rclcpp::Time now_1 = this->get_clock()->now();
+
+        fusedOdom.header.stamp = now_1;
         fusedOdom.header.frame_id = odomFrame;
         fusedOdom.child_frame_id = baseLinkFrame;
 
@@ -124,7 +134,21 @@ private:
             error_theta_new = 0;
         }
 
+        double x_past = 0.0, theta_past = 0.0;
+        double vel_x, vel_theta;
+
         fusedOdom.twist.twist = currentTwist;
+        
+        rclcpp::Time now_2 = this->get_clock()->now();
+        vel_x = ((x + error_x + error_x_bot) - x_past) / (now_2 - now_1).seconds();
+        vel_theta = ((error_theta + fi + error_theta_bot) - theta_past) / (now_2 - now_1).seconds();
+
+        fusedOdom.twist.twist.linear.x = vel_x;
+        fusedOdom.twist.twist.angular.z = vel_theta;
+
+        x_past = x + error_x_new + error_x_new_bot;
+        theta_past = error_theta_new + fi + error_theta_new_bot;
+
         publisher_pose->publish(fusedOdom);
     }
 
@@ -191,11 +215,13 @@ private:
 
         robot.twist.twist = currentTwist;
 
-        publisher_marker->publish(robot);
+        publisher_true->publish(robot);
     }
 
     void odomCb()
     {
+        double x_past = 0.0, theta_past = 0.0;
+        double vel_x, vel_theta;
         fi = fi + currentTwist.angular.z * periodTime;
 
         fi -= 2 * M_PI * floor((fi + M_PI) / (2 * M_PI));
@@ -213,9 +239,9 @@ private:
             error_theta_bot += ((double(rand()) / RAND_MAX) - 0.5) / 100;
         }
 
-        rclcpp::Time now = this->get_clock()->now();
+        rclcpp::Time now_1 = this->get_clock()->now();
 
-        odometry.header.stamp = now;
+        odometry.header.stamp = now_1;
         odometry.header.frame_id = odomFrame;
         odometry.child_frame_id = baseLinkFrame;
 
@@ -232,11 +258,21 @@ private:
 
         odometry.twist.twist = currentTwist;
 
+        rclcpp::Time now_2 = this->get_clock()->now();
+        vel_x = ((x + error_x + error_x_bot) - x_past) / (now_2 - now_1).seconds();
+        vel_theta = ((error_theta + fi + error_theta_bot) - theta_past) / (now_2 - now_1).seconds();
+
+        odometry.twist.twist.linear.x = vel_x;
+        odometry.twist.twist.angular.z = vel_theta;
+
+        x_past = x + error_x + error_x_bot;
+        theta_past = error_theta + fi + error_theta_bot;
+
         publisher_odom->publish(odometry);
     }
 
     rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr subscription_;
-    rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr publisher_marker;
+    rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr publisher_true;
     rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr publisher_odom;
     rclcpp::Subscription<std_msgs::msg::Int16>::SharedPtr subscription_qr;
     rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr publisher_pose;
