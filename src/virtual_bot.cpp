@@ -40,7 +40,7 @@ public:
         subscription_ = this->create_subscription<geometry_msgs::msg::Twist>(tf_prefix + "/cmd_vel", 100, std::bind(&FramePublisher::cmdVelPb, this, _1));
         publisher_marker = this->create_publisher<nav_msgs::msg::Odometry>(tf_prefix + "/robot", 100);
         publisher_odom = this->create_publisher<nav_msgs::msg::Odometry>(tf_prefix + "/odometry", 100);
-        subscription_qr = this->create_subscription<std_msgs::msg::Int16>("qr", 1000, std::bind(&FramePublisher::qrCb, this, _1));
+        subscription_qr = this->create_subscription<std_msgs::msg::Int16>("qr", 100, std::bind(&FramePublisher::qrCb, this, _1));
         publisher_pose = this->create_publisher<nav_msgs::msg::Odometry>(tf_prefix + "/pose_updated", 100);
 
         pose_updated = this->create_wall_timer(50ms, std::bind(&FramePublisher::poseUpdatedCb, this));
@@ -68,6 +68,8 @@ private:
     double periodTime = 0.1;
     double error_x = 0.0, error_y = 0.0, error_theta = 0.0;
     double error_x_new = 0.0, error_y_new = 0.0, error_theta_new = 0.0;
+    double error_x_bot = 0.0, error_y_bot = 0.0, error_theta_bot = 0.0;
+    double error_x_new_bot = 0.0, error_y_new_bot = 0.0, error_theta_new_bot = 0.0;
 
     void cmdVelPb(const geometry_msgs::msg::Twist &msg)
     {
@@ -92,6 +94,10 @@ private:
             error_x_new += ((double(rand()) / RAND_MAX) - 0.5) / 10;
             error_y_new += ((double(rand()) / RAND_MAX) - 0.5) / 10;
             error_theta_new += ((double(rand()) / RAND_MAX) - 0.5) / 10;
+
+            error_x_new_bot += ((double(rand()) / RAND_MAX) - 0.5) / 100;
+            error_y_new_bot += ((double(rand()) / RAND_MAX) - 0.5) / 100;
+            error_theta_new_bot += ((double(rand()) / RAND_MAX) - 0.5) / 100;
         }
 
         rclcpp::Time now = this->get_clock()->now();
@@ -100,12 +106,12 @@ private:
         fusedOdom.header.frame_id = odomFrame;
         fusedOdom.child_frame_id = baseLinkFrame;
 
-        fusedOdom.pose.pose.position.x = x + error_x_new;
-        fusedOdom.pose.pose.position.y = y + error_y_new;
+        fusedOdom.pose.pose.position.x = x + error_x_new + error_x_new_bot;
+        fusedOdom.pose.pose.position.y = y + error_y_new + error_y_new_bot;
         fusedOdom.pose.pose.position.z = 0;
 
         tf2::Quaternion q_new;
-        q_new.setEuler(0, 0, error_theta_new + fi);
+        q_new.setEuler(0, 0, error_theta_new + fi + error_theta_new_bot);
         fusedOdom.pose.pose.orientation.x = q_new.x();
         fusedOdom.pose.pose.orientation.y = q_new.y();
         fusedOdom.pose.pose.orientation.z = q_new.z();
@@ -201,6 +207,10 @@ private:
             error_x += ((double(rand()) / RAND_MAX) - 0.5) / 10;
             error_y += ((double(rand()) / RAND_MAX) - 0.5) / 10;
             error_theta += ((double(rand()) / RAND_MAX) - 0.5) / 10;
+
+            error_x_bot += ((double(rand()) / RAND_MAX) - 0.5) / 100;
+            error_y_bot += ((double(rand()) / RAND_MAX) - 0.5) / 100;
+            error_theta_bot += ((double(rand()) / RAND_MAX) - 0.5) / 100;
         }
 
         rclcpp::Time now = this->get_clock()->now();
@@ -209,12 +219,12 @@ private:
         odometry.header.frame_id = odomFrame;
         odometry.child_frame_id = baseLinkFrame;
 
-        odometry.pose.pose.position.x = x + error_x;
-        odometry.pose.pose.position.y = y + error_y;
+        odometry.pose.pose.position.x = x + error_x + error_x_bot;
+        odometry.pose.pose.position.y = y + error_y + error_y_bot;
         odometry.pose.pose.position.z = 0;
 
         tf2::Quaternion q_new;
-        q_new.setEuler(0, 0, error_theta + fi);
+        q_new.setEuler(0, 0, error_theta + fi + error_theta_bot);
         odometry.pose.pose.orientation.x = q_new.x();
         odometry.pose.pose.orientation.y = q_new.y();
         odometry.pose.pose.orientation.z = q_new.z();
