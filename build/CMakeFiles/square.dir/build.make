@@ -80,10 +80,11 @@ square_EXTERNAL_OBJECTS =
 square: CMakeFiles/square.dir/src/square.cpp.o
 square: CMakeFiles/square.dir/build.make
 square: /opt/ros/galactic/lib/librclcpp.so
-square: /opt/ros/galactic/lib/libgeometry_msgs__rosidl_typesupport_introspection_c.so
-square: /opt/ros/galactic/lib/libgeometry_msgs__rosidl_typesupport_c.so
-square: /opt/ros/galactic/lib/libgeometry_msgs__rosidl_typesupport_introspection_cpp.so
-square: /opt/ros/galactic/lib/libgeometry_msgs__rosidl_typesupport_cpp.so
+square: /opt/ros/galactic/lib/libnav_msgs__rosidl_typesupport_introspection_c.so
+square: /opt/ros/galactic/lib/libnav_msgs__rosidl_typesupport_c.so
+square: /opt/ros/galactic/lib/libnav_msgs__rosidl_typesupport_introspection_cpp.so
+square: /opt/ros/galactic/lib/libnav_msgs__rosidl_typesupport_cpp.so
+square: /opt/ros/galactic/lib/libtf2.so
 square: /opt/ros/galactic/lib/libament_index_cpp.so
 square: /opt/ros/galactic/lib/liblibstatistics_collector.so
 square: /opt/ros/galactic/lib/liblibstatistics_collector_test_msgs__rosidl_typesupport_introspection_c.so
@@ -114,7 +115,12 @@ square: /opt/ros/galactic/lib/libstatistics_msgs__rosidl_typesupport_c.so
 square: /opt/ros/galactic/lib/libstatistics_msgs__rosidl_typesupport_introspection_cpp.so
 square: /opt/ros/galactic/lib/libstatistics_msgs__rosidl_typesupport_cpp.so
 square: /opt/ros/galactic/lib/libtracetools.so
+square: /opt/ros/galactic/lib/libnav_msgs__rosidl_generator_c.so
+square: /opt/ros/galactic/lib/libgeometry_msgs__rosidl_typesupport_introspection_c.so
 square: /opt/ros/galactic/lib/libgeometry_msgs__rosidl_generator_c.so
+square: /opt/ros/galactic/lib/libgeometry_msgs__rosidl_typesupport_c.so
+square: /opt/ros/galactic/lib/libgeometry_msgs__rosidl_typesupport_introspection_cpp.so
+square: /opt/ros/galactic/lib/libgeometry_msgs__rosidl_typesupport_cpp.so
 square: /opt/ros/galactic/lib/libstd_msgs__rosidl_typesupport_introspection_c.so
 square: /opt/ros/galactic/lib/libstd_msgs__rosidl_generator_c.so
 square: /opt/ros/galactic/lib/libstd_msgs__rosidl_typesupport_c.so
@@ -132,6 +138,7 @@ square: /opt/ros/galactic/lib/librosidl_typesupport_c.so
 square: /opt/ros/galactic/lib/librcpputils.so
 square: /opt/ros/galactic/lib/librosidl_runtime_c.so
 square: /opt/ros/galactic/lib/librcutils.so
+square: /opt/ros/galactic/lib/x86_64-linux-gnu/libconsole_bridge.so.1.0
 square: CMakeFiles/square.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/jacob/accio_ws/src/cpp_topics/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable square"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/square.dir/link.txt --verbose=$(VERBOSE)

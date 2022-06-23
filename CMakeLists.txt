@@ -34,7 +34,7 @@ add_executable(square src/square.cpp)
 add_executable(qr_code src/qr.cpp)
 
 ament_target_dependencies(new rclcpp geometry_msgs tf2 tf2_ros std_msgs visualization_msgs nav_msgs)
-ament_target_dependencies(square rclcpp geometry_msgs std_msgs)
+ament_target_dependencies(square rclcpp geometry_msgs std_msgs nav_msgs tf2)
 ament_target_dependencies(qr_code rclcpp std_msgs)
 
 install(TARGETS

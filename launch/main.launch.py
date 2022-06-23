@@ -11,8 +11,8 @@ def generate_launch_description():
         executable="new",
         parameters=[
             {"tf_prefix": "r1"},
-            {"x_pos": 1.8},
-            {"y_pos": -0.7},
+            {"x_pos": 0.0},
+            {"y_pos": 0.0},
             {"a_pos": 1.56}
         ]
     )
@@ -29,7 +29,9 @@ def generate_launch_description():
         package="cpp_topics",
         executable="square",
         parameters=[
-            {"tf_prefix": "r1"}
+            {"tf_prefix": "r1"},
+            {"x_pos": 0.0},
+            {"y_pos": 0.0},
         ]
     )
 

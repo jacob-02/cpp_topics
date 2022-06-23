@@ -143,7 +143,7 @@
 				"role" : "flags"
 			},
 			{
-				"fragment" : "-Wl,-rpath,/opt/ros/galactic/lib:",
+				"fragment" : "-Wl,-rpath,/opt/ros/galactic/lib:/opt/ros/galactic/lib/x86_64-linux-gnu:",
 				"role" : "libraries"
 			},
 			{
@@ -153,22 +153,27 @@
 			},
 			{
 				"backtrace" : 4,
-				"fragment" : "/opt/ros/galactic/lib/libgeometry_msgs__rosidl_typesupport_introspection_c.so",
+				"fragment" : "/opt/ros/galactic/lib/libnav_msgs__rosidl_typesupport_introspection_c.so",
 				"role" : "libraries"
 			},
 			{
 				"backtrace" : 4,
-				"fragment" : "/opt/ros/galactic/lib/libgeometry_msgs__rosidl_typesupport_c.so",
+				"fragment" : "/opt/ros/galactic/lib/libnav_msgs__rosidl_typesupport_c.so",
 				"role" : "libraries"
 			},
 			{
 				"backtrace" : 4,
-				"fragment" : "/opt/ros/galactic/lib/libgeometry_msgs__rosidl_typesupport_introspection_cpp.so",
+				"fragment" : "/opt/ros/galactic/lib/libnav_msgs__rosidl_typesupport_introspection_cpp.so",
 				"role" : "libraries"
 			},
 			{
 				"backtrace" : 4,
-				"fragment" : "/opt/ros/galactic/lib/libgeometry_msgs__rosidl_typesupport_cpp.so",
+				"fragment" : "/opt/ros/galactic/lib/libnav_msgs__rosidl_typesupport_cpp.so",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "/opt/ros/galactic/lib/libtf2.so",
 				"role" : "libraries"
 			},
 			{
@@ -297,7 +302,32 @@
 			},
 			{
 				"backtrace" : 4,
+				"fragment" : "/opt/ros/galactic/lib/libnav_msgs__rosidl_generator_c.so",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "/opt/ros/galactic/lib/libgeometry_msgs__rosidl_typesupport_introspection_c.so",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
 				"fragment" : "/opt/ros/galactic/lib/libgeometry_msgs__rosidl_generator_c.so",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "/opt/ros/galactic/lib/libgeometry_msgs__rosidl_typesupport_c.so",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "/opt/ros/galactic/lib/libgeometry_msgs__rosidl_typesupport_introspection_cpp.so",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "/opt/ros/galactic/lib/libgeometry_msgs__rosidl_typesupport_cpp.so",
 				"role" : "libraries"
 			},
 			{
@@ -375,6 +405,10 @@
 			},
 			{
 				"fragment" : "-ldl",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/opt/ros/galactic/lib/x86_64-linux-gnu/libconsole_bridge.so.1.0",
 				"role" : "libraries"
 			}
 		],

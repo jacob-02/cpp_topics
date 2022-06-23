@@ -81,77 +81,6 @@ private:
         qr = msg;
     }
 
-    void poseUpdatedCb()
-    {
-        fi = fi + currentTwist.angular.z * periodTime;
-
-        fi -= 2 * M_PI * floor((fi + M_PI) / (2 * M_PI));
-        x += cos(fi) * (currentTwist.linear.x * periodTime);
-        y += sin(fi) * (currentTwist.linear.x * periodTime);
-
-        if (currentTwist.linear.x != 0.0)
-        {
-            error_x_new += ((double(rand()) / RAND_MAX) - 0.5) / 10;
-            error_y_new += ((double(rand()) / RAND_MAX) - 0.5) / 10;
-            error_theta_new += ((double(rand()) / RAND_MAX) - 0.5) / 10;
-
-            error_x_new_bot += ((double(rand()) / RAND_MAX) - 0.5) / 100;
-            error_y_new_bot += ((double(rand()) / RAND_MAX) - 0.5) / 100;
-            error_theta_new_bot += ((double(rand()) / RAND_MAX) - 0.5) / 100;
-        }
-
-        else
-        {
-            error_x_new = 0.0;
-            error_y_new = 0.0;
-            error_theta_new = 0.0;
-            error_x_new_bot = 0.0;
-            error_y_new_bot = 0.0;
-            error_theta_new_bot = 0.0;
-        }
-
-        rclcpp::Time now_1 = this->get_clock()->now();
-
-        fusedOdom.header.stamp = now_1;
-        fusedOdom.header.frame_id = odomFrame;
-        fusedOdom.child_frame_id = baseLinkFrame;
-
-        fusedOdom.pose.pose.position.x = x + error_x_new + error_x_new_bot;
-        fusedOdom.pose.pose.position.y = y + error_y_new + error_y_new_bot;
-        fusedOdom.pose.pose.position.z = 0;
-
-        tf2::Quaternion q_new;
-        q_new.setEuler(0, 0, error_theta_new + fi + error_theta_new_bot);
-        fusedOdom.pose.pose.orientation.x = q_new.x();
-        fusedOdom.pose.pose.orientation.y = q_new.y();
-        fusedOdom.pose.pose.orientation.z = q_new.z();
-        fusedOdom.pose.pose.orientation.w = q_new.w();
-
-        if ((qr.data % 50) == 0)
-        {
-            error_x_new = 0;
-            error_y_new = 0;
-            error_theta_new = 0;
-        }
-
-        double x_past = 0.0, theta_past = 0.0;
-        double vel_x, vel_theta;
-
-        fusedOdom.twist.twist = currentTwist;
-        
-        rclcpp::Time now_2 = this->get_clock()->now();
-        vel_x = ((x + error_x + error_x_bot) - x_past) / (now_2 - now_1).seconds();
-        vel_theta = ((error_theta + fi + error_theta_bot) - theta_past) / (now_2 - now_1).seconds();
-
-        fusedOdom.twist.twist.linear.x = vel_x;
-        fusedOdom.twist.twist.angular.z = vel_theta;
-
-        x_past = x + error_x_new + error_x_new_bot;
-        theta_past = error_theta_new + fi + error_theta_new_bot;
-
-        publisher_pose->publish(fusedOdom);
-    }
-
     void tfCb()
     {
         fi = fi + currentTwist.angular.z * periodTime;
@@ -269,6 +198,77 @@ private:
         theta_past = error_theta + fi + error_theta_bot;
 
         publisher_odom->publish(odometry);
+    }
+
+    void poseUpdatedCb()
+    {
+        fi = fi + currentTwist.angular.z * periodTime;
+
+        fi -= 2 * M_PI * floor((fi + M_PI) / (2 * M_PI));
+        x += cos(fi) * (currentTwist.linear.x * periodTime);
+        y += sin(fi) * (currentTwist.linear.x * periodTime);
+
+        if (currentTwist.linear.x != 0.0)
+        {
+            error_x_new += ((double(rand()) / RAND_MAX) - 0.5) / 10;
+            error_y_new += ((double(rand()) / RAND_MAX) - 0.5) / 10;
+            error_theta_new += ((double(rand()) / RAND_MAX) - 0.5) / 10;
+
+            error_x_new_bot += ((double(rand()) / RAND_MAX) - 0.5) / 100;
+            error_y_new_bot += ((double(rand()) / RAND_MAX) - 0.5) / 100;
+            error_theta_new_bot += ((double(rand()) / RAND_MAX) - 0.5) / 100;
+        }
+
+        else
+        {
+            error_x_new = 0.0;
+            error_y_new = 0.0;
+            error_theta_new = 0.0;
+            error_x_new_bot = 0.0;
+            error_y_new_bot = 0.0;
+            error_theta_new_bot = 0.0;
+        }
+
+        rclcpp::Time now_1 = this->get_clock()->now();
+
+        fusedOdom.header.stamp = now_1;
+        fusedOdom.header.frame_id = odomFrame;
+        fusedOdom.child_frame_id = baseLinkFrame;
+
+        fusedOdom.pose.pose.position.x = x + error_x_new + error_x_new_bot;
+        fusedOdom.pose.pose.position.y = y + error_y_new + error_y_new_bot;
+        fusedOdom.pose.pose.position.z = 0;
+
+        tf2::Quaternion q_new;
+        q_new.setEuler(0, 0, error_theta_new + fi + error_theta_new_bot);
+        fusedOdom.pose.pose.orientation.x = q_new.x();
+        fusedOdom.pose.pose.orientation.y = q_new.y();
+        fusedOdom.pose.pose.orientation.z = q_new.z();
+        fusedOdom.pose.pose.orientation.w = q_new.w();
+
+        if ((qr.data % 50) == 0)
+        {
+            error_x_new = 0;
+            error_y_new = 0;
+            error_theta_new = 0;
+        }
+
+        double x_past = 0.0, theta_past = 0.0;
+        double vel_x, vel_theta;
+
+        fusedOdom.twist.twist = currentTwist;
+        
+        rclcpp::Time now_2 = this->get_clock()->now();
+        vel_x = ((x + error_x + error_x_bot) - x_past) / (now_2 - now_1).seconds();
+        vel_theta = ((error_theta + fi + error_theta_bot) - theta_past) / (now_2 - now_1).seconds();
+
+        fusedOdom.twist.twist.linear.x = vel_x;
+        fusedOdom.twist.twist.angular.z = vel_theta;
+
+        x_past = x + error_x_new + error_x_new_bot;
+        theta_past = error_theta_new + fi + error_theta_new_bot;
+
+        publisher_pose->publish(fusedOdom);
     }
 
     rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr subscription_;
