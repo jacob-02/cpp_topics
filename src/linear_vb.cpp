@@ -130,12 +130,12 @@ private:
         fusedOdom.pose.pose.position.y = y_bot;
         fusedOdom.pose.pose.position.z = 0;
 
-        tf2::Quaternion q_new;
-        q_new.setEuler(0, 0, fi_bot);
-        fusedOdom.pose.pose.orientation.x = q_new.x();
-        fusedOdom.pose.pose.orientation.y = q_new.y();
-        fusedOdom.pose.pose.orientation.z = q_new.z();
-        fusedOdom.pose.pose.orientation.w = q_new.w();
+        // tf2::Quaternion q_new;
+        // q_new.setEuler(0, 0, fi_bot);
+        // fusedOdom.pose.pose.orientation.x = q_new.x();
+        // fusedOdom.pose.pose.orientation.y = q_new.y();
+        // fusedOdom.pose.pose.orientation.z = q_new.z();
+        // fusedOdom.pose.pose.orientation.w = q_new.w();
 
         if ((qr.data % 50) == 0)
         {
@@ -146,7 +146,7 @@ private:
 
         fusedOdom.twist.twist.linear.x = currentTwist.linear.x;
 
-        angle = 1.57 - fi_bot;
+        angle = atan2((0 - y_bot), (x_goal - x_bot)) - fi_bot;
         angleSum += angle;
         angleDiff = angle - prevAngle;
 
@@ -179,7 +179,7 @@ private:
 
         // RCLCPP_INFO(this->get_logger(), "angle: %f", angle);
 
-        publisher_pose->publish(fusedOdom);
+        // publisher_pose->publish(fusedOdom);
 
         // double x_past = 0.0, theta_past = 0.0;
         // double vel_x, vel_theta;

@@ -6,6 +6,7 @@
 /home/jacob/accio_ws/src/cpp_topics/build/CMakeFiles/test.dir
 /home/jacob/accio_ws/src/cpp_topics/build/CMakeFiles/install/strip.dir
 /home/jacob/accio_ws/src/cpp_topics/build/CMakeFiles/qr_code.dir
+/home/jacob/accio_ws/src/cpp_topics/build/CMakeFiles/rotate.dir
 /home/jacob/accio_ws/src/cpp_topics/build/CMakeFiles/square.dir
 /home/jacob/accio_ws/src/cpp_topics/build/CMakeFiles/new.dir
 /home/jacob/accio_ws/src/cpp_topics/build/CMakeFiles/cpp_topics_uninstall.dir

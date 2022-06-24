@@ -19,7 +19,8 @@
 						1,
 						2,
 						3,
-						4
+						4,
+						5
 					]
 				}
 			],
@@ -38,7 +39,8 @@
 						1,
 						2,
 						3,
-						4
+						4,
+						5
 					]
 				}
 			],
@@ -54,21 +56,28 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "new::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-new-Debug-605e8fc16edc0040151d.json",
+					"jsonFile" : "target-new-Debug-3ee06dce9092fa2a32ce.json",
 					"name" : "new",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "qr_code::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-qr_code-Debug-5d7c5e2198b0cb3673ed.json",
+					"jsonFile" : "target-qr_code-Debug-3259383c765e90f63a94.json",
 					"name" : "qr_code",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
+					"id" : "rotate::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-rotate-Debug-b88033434fb07972ab88.json",
+					"name" : "rotate",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
 					"id" : "square::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-square-Debug-daa5064ad5095559066a.json",
+					"jsonFile" : "target-square-Debug-39e946720357971e534f.json",
 					"name" : "square",
 					"projectIndex" : 0
 				},

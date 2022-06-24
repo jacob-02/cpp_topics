@@ -31,20 +31,19 @@ public:
 private:
     geometry_msgs::msg::Twist move;
 
-    double x, y;
-    double x_goal = 20.0, distanceTolerance = 0.01, angleTolerance = 0.1;
-    double errorSum = 0.0, prevDistance = 0.0, errorDiff, distance = 0.0;
+    double angle_goal = 20.0, angleTolerance = 0.01;
+    double errorSum = 0.0, prevDistance = 0.0, errorDiff, angle = 0.0;
     double derivative, integral, proportional, pid, constants;
     double Kp = 0.1, Ki = 0.000005, Kd = 0.1;
     double roll, pitch, yaw;
 
     void moveCb()
     {
-        distance = x_goal - x;
-        errorSum += distance;
-        errorDiff = distance - prevDistance;
+        angle = 1.57 - yaw;
+        errorSum += angle;
+        errorDiff = angle - prevDistance;
 
-        proportional = Kp * distance;
+        proportional = Kp * angle;
         integral = Ki * errorSum;
         derivative = Kd * errorDiff;
 
@@ -59,30 +58,34 @@ private:
         {
             pid = -0.5;
         }
+        RCLCPP_INFO(this->get_logger(), "angle: %f", angle);
 
-        move.linear.x = pid;
+        move.angular.z = pid;
         publish_->publish(move);
 
-        prevDistance = distance;
+        prevDistance = angle;
 
-        if (std::fabs(distance) < distanceTolerance)
+        if (std::fabs(angle) < angleTolerance)
         {
-            move.linear.x = 0.0;
+            proportional = 0;
+            integral = 0;
+            derivative = 0;
+            move.angular.z = 0.0;
             publish_->publish(move);
         }
     }
 
     void robotCb(const nav_msgs::msg::Odometry::SharedPtr msg)
     {
-        x = msg->pose.pose.position.x;
+        // x = msg->pose.pose.position.x;
         // y = msg->pose.pose.position.y;
-        // tf2::Quaternion q(
-        //     msg->pose.pose.orientation.x,
-        //     msg->pose.pose.orientation.y,
-        //     msg->pose.pose.orientation.z,
-        //     msg->pose.pose.orientation.w);
-        // tf2::Matrix3x3 m(q);
-        // m.getRPY(roll, pitch, yaw);
+        tf2::Quaternion q(
+            msg->pose.pose.orientation.x,
+            msg->pose.pose.orientation.y,
+            msg->pose.pose.orientation.z,
+            msg->pose.pose.orientation.w);
+        tf2::Matrix3x3 m(q);
+        m.getRPY(roll, pitch, yaw);
     }
 
     rclcpp::TimerBase::SharedPtr move_;

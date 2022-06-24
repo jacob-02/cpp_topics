@@ -181,6 +181,19 @@ qr_code/fast:
 .PHONY : qr_code/fast
 
 #=============================================================================
+# Target rules for targets named rotate
+
+# Build rule for target.
+rotate: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 rotate
+.PHONY : rotate
+
+# fast build rule for target.
+rotate/fast:
+	$(MAKE) -f CMakeFiles/rotate.dir/build.make CMakeFiles/rotate.dir/build
+.PHONY : rotate/fast
+
+#=============================================================================
 # Target rules for targets named square
 
 # Build rule for target.
@@ -259,6 +272,33 @@ src/qr.cpp.s:
 	$(MAKE) -f CMakeFiles/qr_code.dir/build.make CMakeFiles/qr_code.dir/src/qr.cpp.s
 .PHONY : src/qr.cpp.s
 
+src/rotate.o: src/rotate.cpp.o
+
+.PHONY : src/rotate.o
+
+# target to build an object file
+src/rotate.cpp.o:
+	$(MAKE) -f CMakeFiles/rotate.dir/build.make CMakeFiles/rotate.dir/src/rotate.cpp.o
+.PHONY : src/rotate.cpp.o
+
+src/rotate.i: src/rotate.cpp.i
+
+.PHONY : src/rotate.i
+
+# target to preprocess a source file
+src/rotate.cpp.i:
+	$(MAKE) -f CMakeFiles/rotate.dir/build.make CMakeFiles/rotate.dir/src/rotate.cpp.i
+.PHONY : src/rotate.cpp.i
+
+src/rotate.s: src/rotate.cpp.s
+
+.PHONY : src/rotate.s
+
+# target to generate assembly for a file
+src/rotate.cpp.s:
+	$(MAKE) -f CMakeFiles/rotate.dir/build.make CMakeFiles/rotate.dir/src/rotate.cpp.s
+.PHONY : src/rotate.cpp.s
+
 src/square.o: src/square.cpp.o
 
 .PHONY : src/square.o
@@ -327,6 +367,7 @@ help:
 	@echo "... test"
 	@echo "... install/strip"
 	@echo "... qr_code"
+	@echo "... rotate"
 	@echo "... square"
 	@echo "... new"
 	@echo "... cpp_topics_uninstall"
@@ -334,6 +375,9 @@ help:
 	@echo "... src/qr.o"
 	@echo "... src/qr.i"
 	@echo "... src/qr.s"
+	@echo "... src/rotate.o"
+	@echo "... src/rotate.i"
+	@echo "... src/rotate.s"
 	@echo "... src/square.o"
 	@echo "... src/square.i"
 	@echo "... src/square.s"

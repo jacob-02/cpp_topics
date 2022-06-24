@@ -25,18 +25,24 @@ def generate_launch_description():
         ]
     )
 
-    square_node = Node(
+    # square_node = Node(
+    #     package="cpp_topics",
+    #     executable="square",
+    #     parameters=[
+    #         {"tf_prefix": "r1"}
+    #     ]
+    # )
+
+    rotate_node = Node(
         package="cpp_topics",
-        executable="square",
+        executable="rotate",
         parameters=[
-            {"tf_prefix": "r1"},
-            {"x_pos": 0.0},
-            {"y_pos": 0.0},
+            {"tf_prefix": "r1"}
         ]
     )
 
     ld.add_action(virtual_bot_node)
-    ld.add_action(square_node)
+    ld.add_action(rotate_node)
     ld.add_action(qr_node)
 
     return ld
