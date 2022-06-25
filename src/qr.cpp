@@ -21,7 +21,7 @@ public:
     this->get_parameter("tf_prefix", tf_prefix);
 
     publisher_ = this->create_publisher<std_msgs::msg::Int16>(tf_prefix + "/qr", 50);
-    qr_ = this->create_wall_timer(2000ms, std::bind(&QRPublisher::qrCB, this));
+    qr_ = this->create_wall_timer(5000ms, std::bind(&QRPublisher::qrCB, this));
   }
 
 private:
