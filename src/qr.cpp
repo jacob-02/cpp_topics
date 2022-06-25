@@ -3,6 +3,7 @@
 #include <memory>
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/int16.hpp>
+#include <random>
 
 using namespace std::chrono_literals;
 using namespace rclcpp;
@@ -20,17 +21,18 @@ public:
     this->get_parameter("tf_prefix", tf_prefix);
 
     publisher_ = this->create_publisher<std_msgs::msg::Int16>(tf_prefix + "/qr", 50);
-    qr_ = this->create_wall_timer(100ms, std::bind(&QRPublisher::qrCB, this));
+    qr_ = this->create_wall_timer(2000ms, std::bind(&QRPublisher::qrCB, this));
   }
 
 private:
   std_msgs::msg::Int16 qr;
-  int n = 1;
+  int n = rand() % 2;
   void qrCB()
   {
     qr.data = n;
-    publisher_->publish(qr);
-    n++;
+    n = rand() % 2;
+    // publisher_->publish(qr);
+    RCLCPP_INFO(this->get_logger(), "QR %d", n);
   }
   rclcpp::TimerBase::SharedPtr qr_;
   rclcpp::Publisher<std_msgs::msg::Int16>::SharedPtr publisher_;

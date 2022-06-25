@@ -74,7 +74,7 @@ private:
 
     double angleSum = 0.0, prevAngle = 0.0, angleDiff, angle = 0.0;
     double derivativeAngle, integralAngle, proportionalAngle, pidAngle;
-    double Kp_Angle = 1, Ki_Angle = 0.8, Kd_Angle = 0.0;
+    double Kp_Angle = 1, Ki_Angle = 100, Kd_Angle = 0.1;
 
     void cmdVelPb(const geometry_msgs::msg::Twist &msg)
     {
@@ -126,27 +126,28 @@ private:
         fusedOdom.header.frame_id = odomFrame;
         fusedOdom.child_frame_id = baseLinkFrame;
 
-        fusedOdom.pose.pose.position.x = x_bot;
-        fusedOdom.pose.pose.position.y = y_bot;
-        fusedOdom.pose.pose.position.z = 0;
+        // fusedOdom.pose.pose.position.x = x_bot;
+        // fusedOdom.pose.pose.position.y = y_bot;
+        // fusedOdom.pose.pose.position.z = 0;
 
-        tf2::Quaternion q_new;
-        q_new.setEuler(0, 0, fi_bot);
-        fusedOdom.pose.pose.orientation.x = q_new.x();
-        fusedOdom.pose.pose.orientation.y = q_new.y();
-        fusedOdom.pose.pose.orientation.z = q_new.z();
-        fusedOdom.pose.pose.orientation.w = q_new.w();
+        // tf2::Quaternion q_new;
+        // q_new.setEuler(0, 0, fi_bot);
+        // fusedOdom.pose.pose.orientation.x = q_new.x();
+        // fusedOdom.pose.pose.orientation.y = q_new.y();
+        // fusedOdom.pose.pose.orientation.z = q_new.z();
+        // fusedOdom.pose.pose.orientation.w = q_new.w();
 
-        if ((qr.data % 50) == 0)
+        if ((qr.data == 0))
         {
             error_x_new = 0;
             error_y_new = 0;
             error_theta_new = 0;
+            RCLCPP_INFO(this->get_logger(), "qr: %d", qr.data);
         }
 
         fusedOdom.twist.twist.linear.x = currentTwist.linear.x;
 
-        angle = 1.57 - fi_bot;
+        angle = atan2((0 - y_bot), (x_goal - x_bot)) - fi_bot;
         angleSum += angle;
         angleDiff = angle - prevAngle;
 
@@ -156,14 +157,14 @@ private:
 
         pidAngle = proportionalAngle + integralAngle + derivativeAngle;
 
-        if (pidAngle > 0.5)
-        {
-            pidAngle = 0.5;
-        }
-        else if (pidAngle < -0.5)
-        {
-            pidAngle = -0.5;
-        }
+        // if (pidAngle > 0.5)
+        // {
+        //     pidAngle = 0.5;
+        // }
+        // else if (pidAngle < -0.5)
+        // {
+        //     pidAngle = -0.5;
+        // }
 
         fusedOdom.twist.twist.angular.z = pidAngle;
 
@@ -177,7 +178,22 @@ private:
             fusedOdom.twist.twist.angular.z = 0;
         }
 
-        // RCLCPP_INFO(this->get_logger(), "angle: %f", angle);
+        fi_bot = fi_bot + fusedOdom.twist.twist.angular.z * periodTime;
+
+        fi_bot -= 2 * M_PI * floor((fi_bot + M_PI) / (2 * M_PI));
+        x_bot += cos(fi_bot) * (fusedOdom.twist.twist.linear.x * periodTime);
+        y_bot += sin(fi_bot) * (fusedOdom.twist.twist.linear.x * periodTime);
+
+        fusedOdom.pose.pose.position.x = x_bot;
+        fusedOdom.pose.pose.position.y = y_bot;
+        fusedOdom.pose.pose.position.z = 0;
+
+        tf2::Quaternion q_new;
+        q_new.setEuler(0, 0, fi_bot);
+        fusedOdom.pose.pose.orientation.x = q_new.x();
+        fusedOdom.pose.pose.orientation.y = q_new.y();
+        fusedOdom.pose.pose.orientation.z = q_new.z();
+        fusedOdom.pose.pose.orientation.w = q_new.w();
 
         publisher_pose->publish(fusedOdom);
 
