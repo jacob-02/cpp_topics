@@ -1,6 +1,16 @@
 [
 {
   "directory": "/home/jacob/accio_ws/src/cpp_topics/build",
+  "command": "/usr/bin/g++  -DDEFAULT_RMW_IMPLEMENTATION=rmw_cyclonedds_cpp -DRCUTILS_ENABLE_FAULT_INJECTION -isystem /opt/ros/galactic/include  -g   -Wall -Wextra -Wpedantic -std=gnu++17 -o CMakeFiles/new.dir/src/virtual_bot.cpp.o -c /home/jacob/accio_ws/src/cpp_topics/src/virtual_bot.cpp",
+  "file": "/home/jacob/accio_ws/src/cpp_topics/src/virtual_bot.cpp"
+},
+{
+  "directory": "/home/jacob/accio_ws/src/cpp_topics/build",
+  "command": "/usr/bin/g++  -DDEFAULT_RMW_IMPLEMENTATION=rmw_cyclonedds_cpp -DRCUTILS_ENABLE_FAULT_INJECTION -isystem /opt/ros/galactic/include  -g   -Wall -Wextra -Wpedantic -std=gnu++17 -o CMakeFiles/square.dir/src/square.cpp.o -c /home/jacob/accio_ws/src/cpp_topics/src/square.cpp",
+  "file": "/home/jacob/accio_ws/src/cpp_topics/src/square.cpp"
+},
+{
+  "directory": "/home/jacob/accio_ws/src/cpp_topics/build",
   "command": "/usr/bin/g++  -DDEFAULT_RMW_IMPLEMENTATION=rmw_cyclonedds_cpp -DRCUTILS_ENABLE_FAULT_INJECTION -isystem /opt/ros/galactic/include  -g   -Wall -Wextra -Wpedantic -std=gnu++17 -o CMakeFiles/qr_code.dir/src/qr.cpp.o -c /home/jacob/accio_ws/src/cpp_topics/src/qr.cpp",
   "file": "/home/jacob/accio_ws/src/cpp_topics/src/qr.cpp"
 },
@@ -11,12 +21,7 @@
 },
 {
   "directory": "/home/jacob/accio_ws/src/cpp_topics/build",
-  "command": "/usr/bin/g++  -DDEFAULT_RMW_IMPLEMENTATION=rmw_cyclonedds_cpp -DRCUTILS_ENABLE_FAULT_INJECTION -isystem /opt/ros/galactic/include  -g   -Wall -Wextra -Wpedantic -std=gnu++17 -o CMakeFiles/square.dir/src/square.cpp.o -c /home/jacob/accio_ws/src/cpp_topics/src/square.cpp",
-  "file": "/home/jacob/accio_ws/src/cpp_topics/src/square.cpp"
-},
-{
-  "directory": "/home/jacob/accio_ws/src/cpp_topics/build",
-  "command": "/usr/bin/g++  -DDEFAULT_RMW_IMPLEMENTATION=rmw_cyclonedds_cpp -DRCUTILS_ENABLE_FAULT_INJECTION -isystem /opt/ros/galactic/include  -g   -Wall -Wextra -Wpedantic -std=gnu++17 -o CMakeFiles/new.dir/src/virtual_bot.cpp.o -c /home/jacob/accio_ws/src/cpp_topics/src/virtual_bot.cpp",
-  "file": "/home/jacob/accio_ws/src/cpp_topics/src/virtual_bot.cpp"
+  "command": "/usr/bin/g++  -DDEFAULT_RMW_IMPLEMENTATION=rmw_cyclonedds_cpp -DRCUTILS_ENABLE_FAULT_INJECTION -isystem /opt/ros/galactic/include  -g   -Wall -Wextra -Wpedantic -std=gnu++17 -o CMakeFiles/goal.dir/src/goalNode.cpp.o -c /home/jacob/accio_ws/src/cpp_topics/src/goalNode.cpp",
+  "file": "/home/jacob/accio_ws/src/cpp_topics/src/goalNode.cpp"
 }
 ]

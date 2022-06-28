@@ -70,11 +70,12 @@ private:
     double error_x_new = 0.0, error_y_new = 0.0, error_theta_new = 0.0;
     double error_x_bot = 0.0, error_y_bot = 0.0, error_theta_bot = 0.0;
     double error_x_new_bot = 0.0, error_y_new_bot = 0.0, error_theta_new_bot = 0.0;
-    double x_goal = 20.0, angleTolerance = 0.005, theta_goal = 0.0;
+    double x_goal = 17.0, angleTolerance = 0.005, theta_goal = 0.0;
+    double x_bot = x, y_bot = y, fi_bot = fi;
 
     double angleSum = 0.0, prevAngle = 0.0, angleDiff, angle = 0.0;
     double derivativeAngle, integralAngle, proportionalAngle, pidAngle;
-    double Kp_Angle = 1, Ki_Angle = 100, Kd_Angle = 0.1;
+    double Kp_Angle = 1, Ki_Angle = 0.1, Kd_Angle = 1;
 
     void cmdVelPb(const geometry_msgs::msg::Twist &msg)
     {
@@ -97,13 +98,13 @@ private:
 
         if (currentTwist.linear.x != 0.0)
         {
-            error_x_new += ((double(rand()) / RAND_MAX) - 0.5) / 10;
-            error_y_new += ((double(rand()) / RAND_MAX) - 0.5) / 10;
-            error_theta_new += ((double(rand()) / RAND_MAX) - 0.5) / 10;
+            error_x_new += ((double(rand()) / RAND_MAX) - 0.0) / 100;
+            error_y_new += ((double(rand()) / RAND_MAX) - 0.0) / 100;
+            error_theta_new += ((double(rand()) / RAND_MAX) - 0.0) / 100;
 
-            error_x_new_bot += ((double(rand()) / RAND_MAX) - 0.5) / 100;
-            error_y_new_bot += ((double(rand()) / RAND_MAX) - 0.5) / 100;
-            error_theta_new_bot += ((double(rand()) / RAND_MAX) - 0.5) / 100;
+            error_x_new_bot += ((double(rand()) / RAND_MAX) - 0.5) / 1000;
+            error_y_new_bot += ((double(rand()) / RAND_MAX) - 0.5) / 1000;
+            error_theta_new_bot += ((double(rand()) / RAND_MAX) - 0.5) / 1000;
         }
 
         else
@@ -116,36 +117,35 @@ private:
             error_theta_new_bot = 0.0;
         }
 
-        double x_bot = x + error_x_new + error_x_new_bot;
-        double y_bot = y + error_y_new + error_y_new_bot;
-        double fi_bot = fi + error_theta_new + error_theta_new_bot;
-
         rclcpp::Time now_1 = this->get_clock()->now();
 
         fusedOdom.header.stamp = now_1;
         fusedOdom.header.frame_id = odomFrame;
         fusedOdom.child_frame_id = baseLinkFrame;
 
-        fusedOdom.pose.pose.position.x = x_bot;
-        fusedOdom.pose.pose.position.y = y_bot;
-        fusedOdom.pose.pose.position.z = 0;
+        // fusedOdom.pose.pose.position.x = x_bot;
+        // fusedOdom.pose.pose.position.y = y_bot;
+        // fusedOdom.pose.pose.position.z = 0;
 
-        tf2::Quaternion q_new;
-        q_new.setEuler(0, 0, fi_bot);
-        fusedOdom.pose.pose.orientation.x = q_new.x();
-        fusedOdom.pose.pose.orientation.y = q_new.y();
-        fusedOdom.pose.pose.orientation.z = q_new.z();
-        fusedOdom.pose.pose.orientation.w = q_new.w();
+        // tf2::Quaternion q_new;
+        // q_new.setEuler(0, 0, fi_bot);
+        // fusedOdom.pose.pose.orientation.x = q_new.x();
+        // fusedOdom.pose.pose.orientation.y = q_new.y();
+        // fusedOdom.pose.pose.orientation.z = q_new.z();
+        // fusedOdom.pose.pose.orientation.w = q_new.w();
 
-        if ((qr.data == 0))
-        {
-            error_x_new = 0;
-            error_y_new = 0;
-            error_theta_new = 0;
-            RCLCPP_INFO(this->get_logger(), "qr: %d", qr.data);
-        }
+        // if ((qr.data == 1))
+        // {
+        //     error_x_new = 0;
+        //     error_y_new = 0;
+        //     error_theta_new = 0;
+        //     qr.data = 0;
+        // }
+        RCLCPP_INFO(this->get_logger(), "Error 1: %f, Error 2: %f", error_theta_new, error_theta_new_bot);
 
-        fusedOdom.twist.twist.linear.x = currentTwist.linear.x;
+        x_bot = x + error_x_new + error_x_new_bot;
+        y_bot = y + error_y_new + error_y_new_bot;
+        fi_bot = fi + error_theta_new + error_theta_new_bot;
 
         angle = atan2((0 - y_bot), (x_goal - x_bot)) - fi_bot;
         angleSum += angle;
@@ -166,18 +166,38 @@ private:
         //     pidAngle = -0.5;
         // }
 
-        fusedOdom.twist.twist.angular.z = pidAngle;
-
         prevAngle = angle;
 
-        if (std::fabs(angle) < angleTolerance)
-        {
-            // RCLCPP_INFO(this->get_logger(), "Goal reached");
+        fusedOdom.twist.twist.linear.x = 0.3 * (x_goal - x_bot);
+        fusedOdom.twist.twist.angular.z = pidAngle;
 
+        fi_bot = fi_bot + fusedOdom.twist.twist.angular.z * periodTime;
+
+        fi_bot -= 2 * M_PI * floor((fi_bot + M_PI) / (2 * M_PI));
+        x_bot += cos(fi_bot) * (fusedOdom.twist.twist.linear.x * periodTime);
+        y_bot += sin(fi_bot) * (fusedOdom.twist.twist.linear.x * periodTime);
+
+        fusedOdom.pose.pose.position.x = x_bot;
+        fusedOdom.pose.pose.position.y = y_bot;
+        fusedOdom.pose.pose.position.z = 0;
+
+        tf2::Quaternion q_new;
+        q_new.setEuler(0, 0, fi_bot);
+        fusedOdom.pose.pose.orientation.x = q_new.x();
+        fusedOdom.pose.pose.orientation.y = q_new.y();
+        fusedOdom.pose.pose.orientation.z = q_new.z();
+        fusedOdom.pose.pose.orientation.w = q_new.w();
+
+        if (std::fabs(angleSum) > 80)
+        {
+            angleSum = 0;
+        }
+        
+        if (std::fabs(angle) < angleTolerance || (x_goal - x_bot) < 0.1)
+        {
             fusedOdom.twist.twist.linear.x = 0;
             fusedOdom.twist.twist.angular.z = 0;
         }
-
         // fi_bot = fi_bot + fusedOdom.twist.twist.angular.z * periodTime;
 
         // fi_bot -= 2 * M_PI * floor((fi_bot + M_PI) / (2 * M_PI));

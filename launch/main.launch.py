@@ -33,6 +33,14 @@ def generate_launch_description():
         ]
     )
 
+    goal_node = Node(
+        package="cpp_topics",
+        executable="goal",
+        parameters=[
+            {"tf_prefix": "r1"}
+        ]
+    )
+
     # rotate_node = Node(
     #     package="cpp_topics",
     #     executable="rotate",
@@ -43,6 +51,7 @@ def generate_launch_description():
 
     ld.add_action(virtual_bot_node)
     # ld.add_action(rotate_node)
+    ld.add_action(goal_node)
     ld.add_action(square_node)
     ld.add_action(qr_node)
 
