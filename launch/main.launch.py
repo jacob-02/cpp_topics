@@ -13,7 +13,9 @@ def generate_launch_description():
             {"tf_prefix": "r1"},
             {"x_pos": 0.0},
             {"y_pos": 0.0},
-            {"a_pos": 1.56}
+            {"a_pos": 1.56},
+            {"x_goal": 10},
+            {"y_goal": 0}
         ]
     )
 
@@ -37,7 +39,9 @@ def generate_launch_description():
         package="cpp_topics",
         executable="goal",
         parameters=[
-            {"tf_prefix": "r1"}
+            {"tf_prefix": "r1"},
+            {"x_goal": 10},
+            {"y_goal": 10}
         ]
     )
 

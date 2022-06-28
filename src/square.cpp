@@ -35,8 +35,8 @@ private:
     geometry_msgs::msg::Twist move;
 
     double x, y;
-    double x_goal = 17.0, y_goal = 0.0, distanceTolerance = 0.02, angleTolerance = 0.02;
-    double x_new_goal, y_new_goal;
+    double x_goal, y_goal, distanceTolerance = 0.02, angleTolerance = 0.02;
+    // double x_new_goal, y_new_goal;
     double errorSum = 0.0, prevDistance = 0.0, errorDiff, distance = 0.0, angle = 0.0;
     double angleSum = 0.0, prevAngle = 0.0, angleDiff;
     double derivative, integral, proportional, pid, constants;
@@ -44,6 +44,29 @@ private:
     double Kp = 0.06, Ki = 0.0, Kd = 1;
     double KpAngle = 0.08, KiAngle = 0, KdAngle = 1;
     double roll, pitch, yaw;
+
+    void robotCb(const nav_msgs::msg::Odometry::SharedPtr msg)
+    {
+        x = msg->pose.pose.position.x;
+        y = msg->pose.pose.position.y;
+        tf2::Quaternion q(
+            msg->pose.pose.orientation.x,
+            msg->pose.pose.orientation.y,
+            msg->pose.pose.orientation.z,
+            msg->pose.pose.orientation.w);
+        tf2::Matrix3x3 m(q);
+        m.getRPY(roll, pitch, yaw);
+    }
+
+    void xCb(const std_msgs::msg::Int16::SharedPtr msg)
+    {
+        x_goal = msg->data;
+    }
+
+    void yCb(const std_msgs::msg::Int16::SharedPtr msg)
+    {
+        y_goal = msg->data;
+    }
 
     void moveCb()
     {
@@ -58,7 +81,7 @@ private:
         constants = Kp + Ki + Kd;
         pid = proportional + integral + derivative;
 
-        RCLCPP_INFO(this->get_logger(), "distance: %f, error sum: %f, error diff: %f", distance, errorSum, errorDiff);
+        // RCLCPP_INFO(this->get_logger(), "distance: %f, error sum: %f, error diff: %f", distance, errorSum, errorDiff);
 
         if (pid > 0.3)
         {
@@ -70,7 +93,7 @@ private:
         }
 
         move.linear.x = pid;
-        
+
         angle = atan2(y_goal - y, x_goal - x) - yaw;
 
         if (std::fabs(angle) > 0.2)
@@ -88,7 +111,7 @@ private:
         constantsAngle = KpAngle + KiAngle + KdAngle;
         pidAngle = proportionalAngle + integralAngle + derivativeAngle;
 
-        RCLCPP_INFO(this->get_logger(), "angle: %f, error sum: %f, error diff: %f", angle, angleSum, errorDiff);
+        // RCLCPP_INFO(this->get_logger(), "angle: %f, error sum: %f, error diff: %f", angle, angleSum, errorDiff);
 
         if (pidAngle > 0.3)
         {
@@ -112,13 +135,10 @@ private:
             move.linear.x = 0.0;
             move.angular.z = 0.0;
 
-            x_goal = x_new_goal;
-            y_goal = y_new_goal;
-
             publish_->publish(move);
         }
 
-        if(std::fabs(angle) < angleTolerance)
+        if (std::fabs(angle) < angleTolerance)
         {
             move.angular.z = 0.0;
             publish_->publish(move);
@@ -128,29 +148,6 @@ private:
         {
             errorSum = 0.0;
         }
-    }
-
-    void robotCb(const nav_msgs::msg::Odometry::SharedPtr msg)
-    {
-        x = msg->pose.pose.position.x;
-        y = msg->pose.pose.position.y;
-        tf2::Quaternion q(
-            msg->pose.pose.orientation.x,
-            msg->pose.pose.orientation.y,
-            msg->pose.pose.orientation.z,
-            msg->pose.pose.orientation.w);
-        tf2::Matrix3x3 m(q);
-        m.getRPY(roll, pitch, yaw);
-    }
-
-    void xCb(const std_msgs::msg::Int16::SharedPtr msg)
-    {
-        x_new_goal = msg->data;
-    }
-
-    void yCb(const std_msgs::msg::Int16::SharedPtr msg)
-    {
-        y_new_goal = msg->data;
     }
 
     rclcpp::TimerBase::SharedPtr move_;

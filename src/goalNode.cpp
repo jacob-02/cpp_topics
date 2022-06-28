@@ -33,28 +33,20 @@ public:
 private:
   std_msgs::msg::Int16 goal_x_msg;
   std_msgs::msg::Int16 goal_y_msg;
-  
+
   double x, y, yaw;
   double x_vel, yaw_vel;
 
   void goalCB_x()
   {
-    if (x_vel == 0)
-      goal_x_msg.data = 17.0;
-    
-    else
-      goal_x_msg.data = 0;
-    
+    goal_x_msg.data = 10.0;
+
     publisher_x->publish(goal_x_msg);
   }
 
   void goalCB_y()
   {
-    if(yaw_vel == 0)
-      goal_y_msg.data = 17.0;
-    
-    else
-      goal_y_msg.data = 0;
+    goal_y_msg.data = 0.0;
 
     publisher_y->publish(goal_y_msg);
   }
