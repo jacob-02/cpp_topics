@@ -117,7 +117,7 @@ private:
             error_theta_new = 0;
         }
 
-        RCLCPP_INFO(this->get_logger(), "Error 1: %f, Error 2: %f", error_theta_new, error_theta_new_bot);
+        // RCLCPP_INFO(this->get_logger(), "Error 1: %f, Error 2: %f", error_theta_new, error_theta_new_bot);
 
         x_bot = x + error_x_new + error_x_new_bot;
         y_bot = y + error_y_new + error_y_new_bot;
