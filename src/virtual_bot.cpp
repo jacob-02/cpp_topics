@@ -72,7 +72,7 @@ private:
     double error_x_new = 0.0, error_y_new = 0.0, error_theta_new = 0.0;
     double error_x_bot = 0.0, error_y_bot = 0.0, error_theta_bot = 0.0;
     double error_x_new_bot = 0.0, error_y_new_bot = 0.0, error_theta_new_bot = 0.0;
-    double x_goal, y_goal, angleTolerance = 0.005;
+    double x_goal = 10, y_goal = 10, angleTolerance = 0.005;
     double x_bot = x, y_bot = y, fi_bot = fi;
     double x_bot_new, y_bot_new, fi_bot_new;
 

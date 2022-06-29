@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "square"
+			"path" : "autotune"
 		}
 	],
 	"backtrace" : 1,
@@ -30,19 +30,19 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 33,
+				"line" : 34,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 44,
+				"line" : 47,
 				"parent" : 0
 			},
 			{
 				"command" : 3,
 				"file" : 0,
-				"line" : 39,
+				"line" : 41,
 				"parent" : 0
 			},
 			{
@@ -115,7 +115,7 @@
 			]
 		}
 	],
-	"id" : "square::@6890427a1f51a3e7e1df",
+	"id" : "autotune::@6890427a1f51a3e7e1df",
 	"install" : 
 	{
 		"destinations" : 
@@ -414,8 +414,8 @@
 		],
 		"language" : "CXX"
 	},
-	"name" : "square",
-	"nameOnDisk" : "square",
+	"name" : "autotune",
+	"nameOnDisk" : "autotune",
 	"paths" : 
 	{
 		"build" : ".",
@@ -436,7 +436,7 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/square.cpp",
+			"path" : "src/autotune.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],

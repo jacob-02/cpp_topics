@@ -21,7 +21,8 @@
 						3,
 						4,
 						5,
-						6
+						6,
+						7
 					]
 				}
 			],
@@ -42,12 +43,20 @@
 						3,
 						4,
 						5,
-						6
+						6,
+						7
 					]
 				}
 			],
 			"targets" : 
 			[
+				{
+					"directoryIndex" : 0,
+					"id" : "autotune::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-autotune-Debug-2d5fc0587c0311b9132d.json",
+					"name" : "autotune",
+					"projectIndex" : 0
+				},
 				{
 					"directoryIndex" : 0,
 					"id" : "cpp_topics_uninstall::@6890427a1f51a3e7e1df",
@@ -58,35 +67,35 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "goal::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-goal-Debug-cb88ec5a80f1b7718d7d.json",
+					"jsonFile" : "target-goal-Debug-8681273e36b9c959d6a1.json",
 					"name" : "goal",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "new::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-new-Debug-f7b79361bd5bd154e878.json",
+					"jsonFile" : "target-new-Debug-cb01ca2bcd1599ec9d75.json",
 					"name" : "new",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "qr_code::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-qr_code-Debug-b2d229d6ed61df6e6c74.json",
+					"jsonFile" : "target-qr_code-Debug-6e81e64983e532612d0f.json",
 					"name" : "qr_code",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "rotate::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-rotate-Debug-8342a520898ca5181f99.json",
+					"jsonFile" : "target-rotate-Debug-08805d0d63c4a573ca26.json",
 					"name" : "rotate",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "square::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-square-Debug-54588673287cd64d53b1.json",
+					"jsonFile" : "target-square-Debug-e3bc4a554019c7285d85.json",
 					"name" : "square",
 					"projectIndex" : 0
 				},

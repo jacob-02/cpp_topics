@@ -13,9 +13,7 @@ def generate_launch_description():
             {"tf_prefix": "r1"},
             {"x_pos": 0.0},
             {"y_pos": 0.0},
-            {"a_pos": 1.56},
-            {"x_goal": 10},
-            {"y_goal": 0}
+            {"a_pos": 0.0}
         ]
     )
 
@@ -45,6 +43,13 @@ def generate_launch_description():
         ]
     )
 
+    autotune_node = Node(
+        package="cpp_topics",
+        executable="autotune",
+        parameters=[
+            {"tf_prefix": "r1"}
+        ]
+    )
     # rotate_node = Node(
     #     package="cpp_topics",
     #     executable="rotate",
@@ -56,7 +61,8 @@ def generate_launch_description():
     ld.add_action(virtual_bot_node)
     # ld.add_action(rotate_node)
     ld.add_action(goal_node)
-    ld.add_action(square_node)
+    # ld.add_action(square_node)
     ld.add_action(qr_node)
+    ld.add_action(autotune_node)
 
     return ld

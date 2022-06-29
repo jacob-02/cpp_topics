@@ -41,8 +41,10 @@ private:
     double angleSum = 0.0, prevAngle = 0.0, angleDiff;
     double derivative, integral, proportional, pid, constants;
     double derivativeAngle, integralAngle, proportionalAngle, pidAngle, constantsAngle;
-    double Kp = 0.06, Ki = 0.0, Kd = 1;
-    double KpAngle = 0.08, KiAngle = 0, KdAngle = 1;
+    // double Kp = 0.06, Ki = 0.0, Kd = 0;
+    // double KpAngle = 1.69, KiAngle = 0, KdAngle = 0;
+    double Kp = 0.06, Ki = 0.0, Kd = 0;
+    double KpAngle = 1.69, KiAngle = 0, KdAngle = 0;
     double roll, pitch, yaw;
 
     void robotCb(const nav_msgs::msg::Odometry::SharedPtr msg)
@@ -96,10 +98,10 @@ private:
 
         angle = atan2(y_goal - y, x_goal - x) - yaw;
 
-        if (std::fabs(angle) > 0.2)
-        {
-            move.linear.x = 0.0;
-        }
+        // if (std::fabs(angle) > 0.2)
+        // {
+        //     move.linear.x = 0.0;
+        // }
 
         angleSum += angle;
         errorDiff = angle - prevAngle;
@@ -113,14 +115,14 @@ private:
 
         // RCLCPP_INFO(this->get_logger(), "angle: %f, error sum: %f, error diff: %f", angle, angleSum, errorDiff);
 
-        if (pidAngle > 0.3)
-        {
-            pidAngle = 0.3;
-        }
-        else if (pidAngle < -0.3)
-        {
-            pidAngle = -0.3;
-        }
+        // if (pidAngle > 0.3)
+        // {
+        //     pidAngle = 0.3;
+        // }
+        // else if (pidAngle < -0.3)
+        // {
+        //     pidAngle = -0.3;
+        // }
 
         move.angular.z = pidAngle;
 
@@ -141,6 +143,8 @@ private:
         if (std::fabs(angle) < angleTolerance)
         {
             move.angular.z = 0.0;
+            // move.linear.x = 0.0;
+
             publish_->publish(move);
         }
 

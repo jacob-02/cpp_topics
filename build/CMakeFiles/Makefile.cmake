@@ -762,6 +762,7 @@ set(CMAKE_MAKEFILE_PRODUCTS
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/new.dir/DependInfo.cmake"
   "CMakeFiles/square.dir/DependInfo.cmake"
+  "CMakeFiles/autotune.dir/DependInfo.cmake"
   "CMakeFiles/cpp_topics_uninstall.dir/DependInfo.cmake"
   "CMakeFiles/qr_code.dir/DependInfo.cmake"
   "CMakeFiles/uninstall.dir/DependInfo.cmake"

@@ -31,15 +31,18 @@ install(DIRECTORY
 
 add_executable(new src/virtual_bot.cpp)
 add_executable(square src/square.cpp)
+add_executable(autotune src/autotune.cpp)
 add_executable(rotate src/rotate.cpp)
 add_executable(qr_code src/qr.cpp)
 add_executable(goal src/goalNode.cpp)
 
 ament_target_dependencies(new rclcpp geometry_msgs tf2 tf2_ros std_msgs visualization_msgs nav_msgs)
 ament_target_dependencies(square rclcpp geometry_msgs std_msgs nav_msgs tf2)
+ament_target_dependencies(autotune rclcpp geometry_msgs std_msgs nav_msgs tf2)
 ament_target_dependencies(rotate rclcpp geometry_msgs std_msgs nav_msgs tf2)
 ament_target_dependencies(qr_code rclcpp std_msgs tf2 nav_msgs)
 ament_target_dependencies(goal rclcpp geometry_msgs std_msgs nav_msgs)
+
 
 install(TARGETS
   new
@@ -47,6 +50,7 @@ install(TARGETS
   qr_code
   rotate
   goal
+  autotune
   DESTINATION lib/${PROJECT_NAME})
 
 ament_package()

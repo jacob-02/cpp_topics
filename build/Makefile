@@ -68,6 +68,18 @@ install/strip/fast: preinstall/fast
 	/usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
 .PHONY : install/strip/fast
 
+# Special rule for the target install/local
+install/local: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local
+
+# Special rule for the target install/local
+install/local/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local/fast
+
 # Special rule for the target test
 test:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running tests..."
@@ -122,18 +134,6 @@ install/fast: preinstall/fast
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
 	/usr/bin/cmake -P cmake_install.cmake
 .PHONY : install/fast
-
-# Special rule for the target install/local
-install/local: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
-	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local
-
-# Special rule for the target install/local
-install/local/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
-	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -192,6 +192,19 @@ square: cmake_check_build_system
 square/fast:
 	$(MAKE) -f CMakeFiles/square.dir/build.make CMakeFiles/square.dir/build
 .PHONY : square/fast
+
+#=============================================================================
+# Target rules for targets named autotune
+
+# Build rule for target.
+autotune: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 autotune
+.PHONY : autotune
+
+# fast build rule for target.
+autotune/fast:
+	$(MAKE) -f CMakeFiles/autotune.dir/build.make CMakeFiles/autotune.dir/build
+.PHONY : autotune/fast
 
 #=============================================================================
 # Target rules for targets named cpp_topics_uninstall
@@ -257,6 +270,33 @@ goal: cmake_check_build_system
 goal/fast:
 	$(MAKE) -f CMakeFiles/goal.dir/build.make CMakeFiles/goal.dir/build
 .PHONY : goal/fast
+
+src/autotune.o: src/autotune.cpp.o
+
+.PHONY : src/autotune.o
+
+# target to build an object file
+src/autotune.cpp.o:
+	$(MAKE) -f CMakeFiles/autotune.dir/build.make CMakeFiles/autotune.dir/src/autotune.cpp.o
+.PHONY : src/autotune.cpp.o
+
+src/autotune.i: src/autotune.cpp.i
+
+.PHONY : src/autotune.i
+
+# target to preprocess a source file
+src/autotune.cpp.i:
+	$(MAKE) -f CMakeFiles/autotune.dir/build.make CMakeFiles/autotune.dir/src/autotune.cpp.i
+.PHONY : src/autotune.cpp.i
+
+src/autotune.s: src/autotune.cpp.s
+
+.PHONY : src/autotune.s
+
+# target to generate assembly for a file
+src/autotune.cpp.s:
+	$(MAKE) -f CMakeFiles/autotune.dir/build.make CMakeFiles/autotune.dir/src/autotune.cpp.s
+.PHONY : src/autotune.cpp.s
 
 src/goalNode.o: src/goalNode.cpp.o
 
@@ -400,8 +440,10 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... install/strip"
+	@echo "... install/local"
 	@echo "... new"
 	@echo "... square"
+	@echo "... autotune"
 	@echo "... cpp_topics_uninstall"
 	@echo "... qr_code"
 	@echo "... uninstall"
@@ -412,7 +454,9 @@ help:
 	@echo "... list_install_components"
 	@echo "... goal"
 	@echo "... install"
-	@echo "... install/local"
+	@echo "... src/autotune.o"
+	@echo "... src/autotune.i"
+	@echo "... src/autotune.s"
 	@echo "... src/goalNode.o"
 	@echo "... src/goalNode.i"
 	@echo "... src/goalNode.s"

@@ -39,14 +39,14 @@ private:
 
   void goalCB_x()
   {
-    goal_x_msg.data = 10.0;
+    goal_x_msg.data = -5.0;
 
     publisher_x->publish(goal_x_msg);
   }
 
   void goalCB_y()
   {
-    goal_y_msg.data = 0.0;
+    goal_y_msg.data = 5.0;
 
     publisher_y->publish(goal_y_msg);
   }

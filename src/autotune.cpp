@@ -1,214 +1,148 @@
-// Use the Ziegler Nichols Method to calculate reasonable PID gains.
-// The ZN Method is based on setting Ki & Kd to zero, then cranking up Kp until
-// oscillations are observed.
-// This node varies Kp through a range until oscillations are just barely
-// observed,
-// then calculates the other parameters automatically.
-// See https://en.wikipedia.org/wiki/PID_controller
-
+#include <chrono>
+#include <functional>
+#include <memory>
+#include <rclcpp/rclcpp.hpp>
+#include <geometry_msgs/msg/twist.hpp>
+#include <nav_msgs/msg/odometry.hpp>
+#include <std_msgs/msg/string.hpp>
+#include <std_msgs/msg/int16.hpp>
 #include <math.h>
-#include <ros/ros.h>
-#include <std_msgs/Float64.h>
-#include <string>
+#include <tf2/LinearMath/Quaternion.h>
+#include <tf2/LinearMath/Matrix3x3.h>
+#include <tf2/LinearMath/Transform.h>
 
-void setKiKdToZero();
-void setKp(double Kp);
-void setpointCallback(const std_msgs::Float64 &setpoint_msg);
-void stateCallback(const std_msgs::Float64 &state_msg);
-void setFinalParams();
+using namespace std::chrono_literals;
+using namespace rclcpp;
 
-namespace autotune
+class movePublisher : public rclcpp::Node
 {
-    double Ku = 0.;
-    double Tu = 0.;
-    double setpoint = 0.;
-    double state = 0.;
-    std::string ns = "/left_wheel_pid/";
-    int oscillation_count = 0;
-    int num_loops = 100; // Will look for oscillations for num_loops*loopRate
-    int initial_error = 0;
-    double Kp_ZN = 0.;
-    double Ki_ZN = 0.;
-    double Kd_ZN = 0.;
-    bool found_Ku = false;
-    std::vector<double> oscillation_times(3); // Used to calculate Tu, the oscillation period
-}
-
-int main(int argc, char **argv)
-{
-    ros::init(argc, argv, "autotune_node");
-    ros::NodeHandle autotune_node;
-    ros::start();
-    ros::Subscriber setpoint_sub = autotune_node.subscribe("/setpoint", 1, setpointCallback);
-    ros::Subscriber state_sub = autotune_node.subscribe("/state", 1, stateCallback);
-    ros::Rate loopRate(50);
-
-    // Set Ki and Kd to zero for the ZN method with dynamic_reconfigure
-    setKiKdToZero();
-
-    // Define how rapidly the value of Kp is varied, and the max/min values to try
-    double Kp_max = 10.;
-    double Kp_min = 0.5;
-    double Kp_step = 1.0;
-
-    for (double Kp = Kp_min; Kp <= Kp_max; Kp += Kp_step)
+public:
+    movePublisher()
+        : Node("move_publisher")
     {
-        //////////////////////
-        // Get the error sign.
-        //////////////////////
-        // Need to wait for new setpoint/state msgs
-        ros::topic::waitForMessage<std_msgs::Float64>("setpoint");
-        ros::topic::waitForMessage<std_msgs::Float64>("state");
+        this->declare_parameter<std::string>("tf_prefix", "r0");
 
-        // Try a new Kp.
-        setKp(Kp);
-        ROS_INFO_STREAM("Trying Kp = " << Kp); // Blank line on terminal
-        autotune::oscillation_count = 0;       // Reset to look for oscillations again
+        this->get_parameter("tf_prefix", tf_prefix);
 
-        for (int i = 0; i < autotune::num_loops; i++) // Collect data for loopRate*num_loops seconds
+        publish_ = this->create_publisher<geometry_msgs::msg::Twist>(tf_prefix + "/cmd_vel", 50);
+        move_ = this->create_wall_timer(10ms, std::bind(&movePublisher::moveCb, this));
+        subscribe_robot = this->create_subscription<nav_msgs::msg::Odometry>(tf_prefix + "/robot", 50, std::bind(&movePublisher::robotCb, this, std::placeholders::_1));
+        subscribe_x = this->create_subscription<std_msgs::msg::Int16>(tf_prefix + "/x_goal", 50, std::bind(&movePublisher::xCb, this, std::placeholders::_1));
+        subscribe_y = this->create_subscription<std_msgs::msg::Int16>(tf_prefix + "/y_goal", 50, std::bind(&movePublisher::yCb, this, std::placeholders::_1));
+    }
+
+private:
+    geometry_msgs::msg::Twist move;
+
+    double x, y;
+    double x_goal, y_goal, angleTolerance = 0.000029;
+    double angleSum = 0.0, prevAngle = 0.0, angleDiff;
+    double angle, errorDiff;
+    double derivativeAngle, integralAngle, proportionalAngle, pidAngle, constantsAngle;
+    double KpAngle = 1.69, KiAngle = 0, KdAngle = 0;
+    double roll, pitch, yaw;
+    double distance;
+    double time;
+    int i = 0;
+
+    rclcpp::Time now_1 = this->get_clock()->now();
+
+    void moveCb()
+    {
+        distance = sqrt(std::pow(x_goal - x, 2) + std::pow(y_goal - y, 2));
+
+        move.linear.x = 0.3;
+
+        angle = atan2(y_goal - y, x_goal - x) - yaw;
+
+        angleSum += angle;
+        errorDiff = angle - prevAngle;
+
+        proportionalAngle = KpAngle * angle;
+        integralAngle = KiAngle * angleSum;
+        derivativeAngle = KdAngle * errorDiff;
+
+        constantsAngle = KpAngle + KiAngle + KdAngle;
+        pidAngle = proportionalAngle + integralAngle + derivativeAngle;
+
+        move.angular.z = pidAngle;
+
+        prevAngle = angle;
+
+        RCLCPP_INFO(this->get_logger(), "Angle: %f", angle);
+
+        rclcpp::Time now_current = this->get_clock()->now();
+
+        RCLCPP_INFO(this->get_logger(), "Time: %f", now_current.seconds() - now_1.seconds());
+
+        if ((now_current.seconds() - now_1.seconds()) > 30)
         {
-            ros::spinOnce();
-            loopRate.sleep();
-            if (i == 0) // Get the sign of the initial error
+            RCLCPP_INFO(this->get_logger(), "Very wrong Kp");
+            rclcpp::shutdown();
+        }
+
+        if (std::fabs(angle) < (angleTolerance))
+        {
+            move.angular.z = 0.0;
+            move.linear.x = 0.0;
+
+            i++;
+            if (i > 4)
             {
-                autotune::initial_error = (autotune::setpoint - autotune::state);
-            }
+                rclcpp::Time now_2 = this->get_clock()->now();
+                RCLCPP_INFO(this->get_logger(), "Angle: %f, Time: %f", angle, now_2.seconds() - now_1.seconds());
 
-            // Did the system oscillate about the setpoint? If so, Kp~Ku.
-            // Oscillation => the sign of the error changes
-            // The first oscillation is caused by the change in setpoint. Ignore it.
-            // Look for 2 oscillations.
-            // Get a fresh state message
-            ros::topic::waitForMessage<std_msgs::Float64>("state");
-            double new_error = (autotune::setpoint - autotune::state); // Sign of the error
-            // ROS_INFO_STREAM("New error: "<< new_error);
-            if (std::signbit(autotune::initial_error) != std::signbit(new_error))
-            {
-                autotune::oscillation_times.at(autotune::oscillation_count) =
-                    loopRate.expectedCycleTime().toSec() * i; // Record the time to calculate a period, Tu
-                autotune::oscillation_count++;
-                ROS_INFO_STREAM("Oscillation occurred. Oscillation count:  " << autotune::oscillation_count);
-                autotune::initial_error = new_error; // Reset to look for another oscillation
+                move.angular.z = 0.0;
+                move.linear.x = 0.0;
 
-                // If the system is definitely oscillating about the setpoint
-                if (autotune::oscillation_count > 2)
-                {
-                    // Now calculate the period of oscillation (Tu)
-                    autotune::Tu = autotune::oscillation_times.at(2) - autotune::oscillation_times.at(0);
-                    ROS_INFO_STREAM("Tu (oscillation period): " << autotune::Tu);
-                    // ROS_INFO_STREAM( "2*sampling period: " <<
-                    // 2.*loopRate.expectedCycleTime().toSec() );
-
-                    // We're looking for more than just the briefest dip across the
-                    // setpoint and back.
-                    // Want to see significant oscillation
-                    if (autotune::Tu > 3. * loopRate.expectedCycleTime().toSec())
-                    {
-                        autotune::Ku = Kp;
-
-                        // Now calculate the other parameters with ZN method
-                        autotune::Kp_ZN = 0.6 * autotune::Ku;
-                        autotune::Ki_ZN = 1.2 * autotune::Ku / autotune::Tu;
-                        autotune::Kd_ZN = 3. * autotune::Ku * autotune::Tu / 40.;
-
-                        autotune::found_Ku = true;
-                        goto DONE;
-                    }
-                    else
-                        break; // Try the next Kp
-                }
+                rclcpp::shutdown();
             }
         }
-    }
-DONE:
 
-    if (autotune::found_Ku == true)
+        if (distance < 0.01)
+        {
+            move.linear.x = 0.0;
+        }
+
+        publish_->publish(move);
+    }
+
+    void xCb(const std_msgs::msg::Int16::SharedPtr msg)
     {
-        setFinalParams();
+        x_goal = msg->data;
     }
-    else
-        ROS_INFO_STREAM("Did not see any oscillations for this range of Kp. Adjust "
-                        "Kp_max and Kp_min to broaden the search.");
 
-    ros::shutdown();
+    void yCb(const std_msgs::msg::Int16::SharedPtr msg)
+    {
+        y_goal = msg->data;
+    }
+
+    void robotCb(const nav_msgs::msg::Odometry::SharedPtr msg)
+    {
+        x = msg->pose.pose.position.x;
+        y = msg->pose.pose.position.y;
+        tf2::Quaternion q(
+            msg->pose.pose.orientation.x,
+            msg->pose.pose.orientation.y,
+            msg->pose.pose.orientation.z,
+            msg->pose.pose.orientation.w);
+        tf2::Matrix3x3 m(q);
+        m.getRPY(roll, pitch, yaw);
+    }
+
+    rclcpp::TimerBase::SharedPtr move_;
+    rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr publish_;
+    rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr subscribe_robot;
+    rclcpp::Subscription<std_msgs::msg::Int16>::SharedPtr subscribe_x;
+    rclcpp::Subscription<std_msgs::msg::Int16>::SharedPtr subscribe_y;
+
+    std::string tf_prefix;
+};
+
+int main(int argc, char *argv[])
+{
+    rclcpp::init(argc, argv);
+    rclcpp::spin(std::make_shared<movePublisher>());
+    rclcpp::shutdown();
     return 0;
-}
-
-// Set Ki and Kd to zero with dynamic_reconfigure
-void setKiKdToZero()
-{
-    dynamic_reconfigure::ReconfigureRequest srv_req;
-    dynamic_reconfigure::ReconfigureResponse srv_resp;
-    dynamic_reconfigure::DoubleParameter double_param;
-    dynamic_reconfigure::Config config;
-    double_param.name = "Ki";
-    double_param.value = 0.0;
-    config.doubles.push_back(double_param);
-    double_param.name = "Kd";
-    double_param.value = 0.0;
-    config.doubles.push_back(double_param);
-    srv_req.config = config;
-    ros::service::call(autotune::ns + "set_parameters", srv_req, srv_resp);
-}
-
-// Set Kp with dynamic_reconfigure
-void setKp(double Kp)
-{
-    dynamic_reconfigure::ReconfigureRequest srv_req;
-    dynamic_reconfigure::ReconfigureResponse srv_resp;
-    dynamic_reconfigure::DoubleParameter double_param;
-    dynamic_reconfigure::Config config;
-
-    // A blank service call to get the current parameters into srv_resp
-    ros::service::call(autotune::ns + "set_parameters", srv_req, srv_resp);
-
-    double_param.name = "Kp";
-    double_param.value = Kp / srv_resp.config.doubles.at(0).value; // Adjust for the scale slider on the GUI
-    config.doubles.push_back(double_param);
-    srv_req.config = config;
-    ros::service::call(autotune::ns + "set_parameters", srv_req, srv_resp);
-}
-
-void setpointCallback(const std_msgs::Float64 &setpoint_msg)
-{
-    autotune::setpoint = setpoint_msg.data;
-}
-
-void stateCallback(const std_msgs::Float64 &state_msg)
-{
-    autotune::state = state_msg.data;
-}
-
-// Print out and set the final parameters as calculated by the autotuner
-void setFinalParams()
-{
-    ROS_INFO_STREAM(" ");
-    ROS_INFO_STREAM("The suggested parameters are: ");
-    ROS_INFO_STREAM("Kp  " << autotune::Kp_ZN);
-    ROS_INFO_STREAM("Ki  " << autotune::Ki_ZN);
-    ROS_INFO_STREAM("Kd  " << autotune::Kd_ZN);
-
-    // Set the ZN parameters with dynamic_reconfigure
-    dynamic_reconfigure::ReconfigureRequest srv_req;
-    dynamic_reconfigure::ReconfigureResponse srv_resp;
-    dynamic_reconfigure::DoubleParameter double_param;
-    dynamic_reconfigure::Config config;
-
-    // A blank service call to get the current parameters into srv_resp
-    ros::service::call(autotune::ns + "set_parameters", srv_req, srv_resp);
-
-    double_param.name = "Kp";
-    double_param.value = autotune::Kp_ZN / srv_resp.config.doubles.at(0).value; // Adjust for the scale slider on the GUI
-    config.doubles.push_back(double_param);
-
-    double_param.name = "Ki";
-    double_param.value = autotune::Ki_ZN / srv_resp.config.doubles.at(0).value; // Adjust for the scale slider on the GUI
-    config.doubles.push_back(double_param);
-
-    double_param.name = "Kd";
-    double_param.value = autotune::Kd_ZN / srv_resp.config.doubles.at(0).value; // Adjust for the scale slider on the GUI
-    config.doubles.push_back(double_param);
-
-    srv_req.config = config;
-    ros::service::call(autotune::ns + "set_parameters", srv_req, srv_resp);
 }
