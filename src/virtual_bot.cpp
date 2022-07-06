@@ -92,24 +92,24 @@ private:
         x_error += cos(fi_error) * (currentErrorTwist.linear.x * periodTime);
         y_error += sin(fi_error) * (currentErrorTwist.linear.x * periodTime);
 
-        error_x_new += ((double(rand()) / RAND_MAX) - 0.0) / 1000;
-        error_y_new += ((double(rand()) / RAND_MAX) - 0.0) / 1000;
-        error_theta_new += ((double(rand()) / RAND_MAX) - 0.0) / 1000;
+        error_x_new = ((double(rand()) / RAND_MAX) - 0.0) / 1000;
+        error_y_new = ((double(rand()) / RAND_MAX) - 0.0) / 1000;
+        error_theta_new = ((double(rand()) / RAND_MAX) - 0.0) / 1000;
 
-        error_x_new_bot += ((double(rand()) / RAND_MAX) - 0.0) / 10000;
-        error_y_new_bot += ((double(rand()) / RAND_MAX) - 0.0) / 10000;
-        error_theta_new_bot += ((double(rand()) / RAND_MAX) - 0.0) / 10000;
+        error_x_new_bot = ((double(rand()) / RAND_MAX) - 0.0) / 1000;
+        error_y_new_bot = ((double(rand()) / RAND_MAX) - 0.0) / 1000;
+        error_theta_new_bot = ((double(rand()) / RAND_MAX) - 0.0) / 1000;
 
         x_bot = x_error + error_x_new + error_x_new_bot;
         y_bot = y_error + error_y_new + error_y_new_bot;
         fi_bot = fi_error + error_theta_new + error_theta_new_bot;
 
-        if ((qr.data == 1))
-        {
-            error_x_new = 0.0;
-            error_y_new = 0.0;
-            error_theta_new = 0.0;
-        }
+        // if ((qr.data == 1))
+        // {
+        //     error_x_new = 0.0;
+        //     error_y_new = 0.0;
+        //     error_theta_new = 0.0;
+        // }
 
         rclcpp::Time now = this->get_clock()->now();
 

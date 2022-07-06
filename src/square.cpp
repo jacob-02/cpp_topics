@@ -52,7 +52,7 @@ private:
     double Kp = 0.06, Ki = 0.0, Kd = 0;
     double Kp_error = 0.06, Ki_error = 0.0, Kd_error = 0;
     double KpAngle = 0.69, KiAngle = 0, KdAngle = 0;
-    double KpAngle_error = 0.06, KiAngle_error = 0, KdAngle_error = 0;
+    double KpAngle_error = 3, KiAngle_error = 0, KdAngle_error = 0;
     double roll, pitch, yaw;
     double roll_error, pitch_error, yaw_error;
 
@@ -104,13 +104,13 @@ private:
 
         pid_error = proportional_error + integral_error + derivative_error;
 
-        if (pid_error > 0.3)
+        if (pid_error > 0.5)
         {
-            pid_error = 0.3;
+            pid_error = 0.5;
         }
-        else if (pid_error < -0.3)
+        else if (pid_error < -0.5)
         {
-            pid_error = -0.3;
+            pid_error = -0.5;
         }
 
         move_error.linear.x = pid_error;
@@ -129,9 +129,13 @@ private:
         prevDistance_error = distance_error;
         prevAngle_error = angle_error;
 
-        if(std::fabs(distance_error) < distanceTolerance && std::fabs(angle_error) < angleTolerance)
+        if(std::fabs(distance_error) < distanceTolerance)
         {
             move_error.linear.x = 0;
+        }
+
+        if(std::fabs(angle_error) < angleTolerance)
+        {
             move_error.angular.z = 0;
         }
 
