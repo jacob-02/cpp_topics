@@ -35,12 +35,15 @@ private:
 
   int qrCB()
   {
-    for (float i = -10; i < 10; i++)
+    for (float i = -20; i < 20; i += 1)
     {
-      for (float j = -10; j < 10; j++)
+      for (float j = -20; j < 20; j += 1)
       {
-        if ((std::fabs(x - i) <= 0.01) && (std::fabs(y - j) <= 0.01))
+        if ((std::fabs(x - i) <= 0.05) && (std::fabs(y - j) <= 0.05))
+        {
+          RCLCPP_INFO(this->get_logger(), "QR %d", 1);
           return 1;
+        }
         // RCLCPP_INFO(this->get_logger(), "x: %f, y: %f", x, y);
       }
     }

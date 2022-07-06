@@ -75,7 +75,7 @@ private:
 
         RCLCPP_INFO(this->get_logger(), "Time: %f", now_current.seconds() - now_1.seconds());
 
-        if ((now_current.seconds() - now_1.seconds()) > 30)
+        if ((now_current.seconds() - now_1.seconds()) > 25)
         {
             RCLCPP_INFO(this->get_logger(), "Very wrong Kp");
             rclcpp::shutdown();
@@ -87,7 +87,7 @@ private:
             move.linear.x = 0.0;
 
             i++;
-            if (i > 4)
+            if (i > 10)
             {
                 rclcpp::Time now_2 = this->get_clock()->now();
                 RCLCPP_INFO(this->get_logger(), "Angle: %f, Time: %f", angle, now_2.seconds() - now_1.seconds());

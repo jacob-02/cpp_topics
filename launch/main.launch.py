@@ -61,8 +61,8 @@ def generate_launch_description():
     ld.add_action(virtual_bot_node)
     # ld.add_action(rotate_node)
     ld.add_action(goal_node)
-    # ld.add_action(square_node)
+    ld.add_action(square_node)
     ld.add_action(qr_node)
-    ld.add_action(autotune_node)
+    # ld.add_action(autotune_node)
 
     return ld
