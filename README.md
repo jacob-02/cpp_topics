@@ -84,7 +84,7 @@ Do ensure that the prefix is appropriately added. The parameter is `tf_prefix`
 
 
 ```bash
-tf_prefix := Helps in identifying the bot in case of multi robot systems
+tf_prefix := Robot ID
 x_pos := Initial x position of the bot
 y_pos := Initial y position of the bot
 a_pos := Initial a position of the bot
